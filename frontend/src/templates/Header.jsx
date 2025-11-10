@@ -5,6 +5,7 @@ function Header_template(params) {
         <>
             <Link to="/">Accueil</Link> 
             <Link to="/Inscription">Inscription</Link>
+            <Link to="/Login">Login</Link>
         </>
     )
 }
