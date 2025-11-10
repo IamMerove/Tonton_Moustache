@@ -3,17 +3,18 @@ import './App.css'
 import Page_Accueil from './pages/Accueil'
 import Header_template from './templates/Header'
 import Footer_template from './templates/Footer'
+import Inscription_Page from './pages/Inscription'
 
 function App() {
   return (
     <BrowserRouter>
-      <Header />
+      <Header_template />
       <Routes>
-        <Route path="/" element={<Page_Accueil />} />
-        <Route path="/" element={<Page_Accueil />} />
-
+        <Route path="/Acceuil" element={<Page_Accueil />} />
+        <Route path="/Inscription" element={<Inscription_Page />} />
+        
       </Routes>
-      <Footer />
+      <Footer_template />
     </BrowserRouter>
   )
 }
