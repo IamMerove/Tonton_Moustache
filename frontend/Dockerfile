@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Exposer le port
-EXPOSE 3000
+EXPOSE 5173
 
 # Commande de démarrage en mode développement
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
