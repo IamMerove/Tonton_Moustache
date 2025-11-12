@@ -17,7 +17,7 @@ class Agent(Base):
     est_actif = Column(Boolean, nullable=False, default=True)
     description = Column(String(255), nullable=False)
     date_creation = Column(DateTime, nullable=False, server_default=func.now())
-    consentement_rgpdprompt_system = Column(Boolean, nullable=False, default=False)
+    prompt_system = Column(String, nullable=False, default=False)
     model = Column(String(100), nullable=False)
     temperature = Column(float, nullable=False, default=0.7)
     max_tokens = Column(Integer, nullable=False)
