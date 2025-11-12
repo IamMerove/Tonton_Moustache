@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # Imports locaux
 from users import router as users_router
-from users.models import User
+from users.models import User, Niveau, Role
 from database import engine, Base
 
 # ============= CRÉATION DES TABLES =============
