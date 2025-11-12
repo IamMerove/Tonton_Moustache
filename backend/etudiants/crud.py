@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from typing import List, Optional
-import hashlib
+import bcrypt
 from datetime import datetime
 
 # Imports locaux
@@ -11,12 +11,15 @@ from .schemas import UserCreate, UserUpdate
 # ============= FONCTIONS UTILITAIRES =============
 
 def hash_password(password: str) -> str:
-    """Hasher un mot de passe avec SHA-256"""
-    return hashlib.sha256(password.encode()).hexdigest()
+    """Hasher un mot de passe avec bcrypt (compatible avec PHP password_hash)"""
+    # Générer le salt et hasher le mot de passe
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Vérifier un mot de passe"""
-    return hash_password(plain_password) == hashed_password
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 # ============= CRUD UTILISATEURS =============
 
@@ -25,26 +28,26 @@ class UserCRUD:
     
     @staticmethod
     def get_by_id(db: Session, user_id: int) -> Optional[User]:
-        """Récupérer un utilisateur par ID"""
-        return db.query(User).filter(User.id == user_id).first()
+        """Récupérer un étudiant par ID"""
+        return db.query(User).filter(User.id_etudiant == user_id).first()
     
     @staticmethod
     def get_by_email(db: Session, email: str) -> Optional[User]:
-        """Récupérer un utilisateur par email"""
+        """Récupérer un étudiant par email"""
         return db.query(User).filter(User.email == email.lower()).first()
     
     @staticmethod
     def get_all(db: Session, skip: int = 0, limit: int = 100, search: str = None) -> List[User]:
-        """Récupérer tous les utilisateurs avec recherche optionnelle"""
+        """Récupérer tous les étudiants avec recherche optionnelle"""
         query = db.query(User)
         
         # Recherche optionnelle
         if search:
             query = query.filter(
                 or_(
-                    User.name.contains(search),
-                    User.email.contains(search),
-                    User.description.contains(search)
+                    User.nom.contains(search),
+                    User.prenom.contains(search),
+                    User.email.contains(search)
                 )
             )
         
@@ -52,18 +55,21 @@ class UserCRUD:
     
     @staticmethod
     def create(db: Session, user_data: UserCreate) -> User:
-        """Créer un nouvel utilisateur"""
+        """Créer un nouvel étudiant"""
         # Hasher le mot de passe
         hashed_password = hash_password(user_data.password)
         
         # Créer l'instance
         db_user = User(
-            name=user_data.name,
+            nom=user_data.nom,
+            prenom=user_data.prenom,
             email=user_data.email.lower(),
-            password_hash=hashed_password,
-            description=user_data.description,
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
+            avatar=user_data.avatar,
+            passwordhash=hashed_password,
+            date_inscription=datetime.utcnow(),
+            consentement_rgpd=user_data.consentement_rgpd,
+            id_niveau=user_data.id_niveau,
+            id_role=user_data.id_role
         )
         
         # Sauvegarder
@@ -74,7 +80,7 @@ class UserCRUD:
     
     @staticmethod
     def update(db: Session, user_id: int, user_data: UserUpdate) -> Optional[User]:
-        """Mettre à jour un utilisateur"""
+        """Mettre à jour un étudiant"""
         db_user = UserCRUD.get_by_id(db, user_id)
         if not db_user:
             return None
@@ -86,16 +92,13 @@ class UserCRUD:
                 value = value.lower()  # Email en minuscules
             setattr(db_user, field, value)
         
-        # Mettre à jour la date de modification
-        db_user.updated_at = datetime.utcnow()
-        
         db.commit()
         db.refresh(db_user)
         return db_user
     
     @staticmethod
     def delete(db: Session, user_id: int) -> bool:
-        """Supprimer un utilisateur"""
+        """Supprimer un étudiant"""
         db_user = UserCRUD.get_by_id(db, user_id)
         if db_user:
             db.delete(db_user)
@@ -105,19 +108,18 @@ class UserCRUD:
     
     @staticmethod
     def authenticate(db: Session, email: str, password: str) -> Optional[User]:
-        """Authentifier un utilisateur"""
+        """Authentifier un étudiant"""
         user = UserCRUD.get_by_email(db, email)
-        if user and verify_password(password, user.password_hash):
+        if user and verify_password(password, user.passwordhash):
             return user
         return None
     
     @staticmethod
-    def set_active_status(db: Session, user_id: int, is_active: bool) -> Optional[User]:
-        """Activer/désactiver un utilisateur"""
+    def set_rgpd_consent(db: Session, user_id: int, consent: bool) -> Optional[User]:
+        """Définir le consentement RGPD"""
         db_user = UserCRUD.get_by_id(db, user_id)
         if db_user:
-            db_user.is_active = is_active
-            db_user.updated_at = datetime.utcnow()
+            db_user.consentement_rgpd = consent
             db.commit()
             db.refresh(db_user)
         return db_user

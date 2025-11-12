@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Imports locaux
-from routers.users import router as users_router
-from routers.users.models import User
+from users import router as users_router
+from users.models import User
 from database import engine, Base
 
 # ============= CRÉATION DES TABLES =============
@@ -21,7 +21,7 @@ app = FastAPI(
 # ============= MIDDLEWARE CORS =============
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # URL du frontend
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # URLs du frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
