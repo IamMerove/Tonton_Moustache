@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Float
 from sqlalchemy.sql import func
 import sys
 import os
@@ -19,7 +19,7 @@ class Agent(Base):
     date_creation = Column(DateTime, nullable=False, server_default=func.now())
     prompt_system = Column(String, nullable=False, default=False)
     model = Column(String(100), nullable=False)
-    temperature = Column(float, nullable=False, default=0.7)
+    temperature = Column(Float, nullable=False, default=0.7)
     max_tokens = Column(Integer, nullable=False)
     top_p= Column(Integer, nullable=False)
     reasoning_effort=Column(Integer, nullable=False)

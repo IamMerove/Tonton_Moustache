@@ -3,7 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # Imports locaux
 from users import router as users_router
+from agents.agents_routes import router as agents_router
 from users.models import User
+from agents.models import Agent
 from database import engine, Base
 
 # ============= CRÉATION DES TABLES =============
@@ -12,7 +14,7 @@ Base.metadata.create_all(bind=engine)
 # ============= CONFIGURATION FASTAPI =============
 app = FastAPI(
     title="Tonton Moustache API",
-    description="API de gestion de recettes de cuisine",
+    description="API de gestion d'agent IA",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -52,6 +54,13 @@ app.include_router(
     prefix="/users", 
     tags=["Utilisateurs"],
     responses={404: {"description": "Utilisateur non trouvé"}}
+)
+
+app.include_router(
+    agents_router,
+    prefix="/agents",
+    tags=["Agents"],
+    responses={404: {"description": "Agent non trouvé"}}
 )
 
 # ============= DÉMARRAGE =============
