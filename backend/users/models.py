@@ -29,3 +29,4 @@ class User(Base):
     # Relations
     niveau = relationship("Niveau", back_populates="etudiants")
     role = relationship("Role", back_populates="etudiants")
+    sessions = relationship("SessionConversation", back_populates="etudiant")

@@ -8,10 +8,12 @@ from users.models import User
 from agents.models import Agent
 from roles import router as roles_router
 from niveaux import router as niveaux_router
+from sessions import router as sessions_router
 from niveaux.models import Niveau
 from roles.models import Role
 from messages.messages_routes import router as messages_router
 from messages.models import Message
+from sessions.models import SessionConversation
 from database import engine, Base
 
 # ============= CRÉATION DES TABLES =============
@@ -89,6 +91,14 @@ app.include_router(
     prefix="/messages",
     tags=["Messages"],
     responses={404: {"description": "Message non trouvé"}}
+    
+)
+
+app.include_router(
+    sessions_router, 
+    prefix="/sessions", 
+    tags=["Sessions"],
+    responses={404: {"description": "Session non trouvée"}}
 )
 
 # ============= DÉMARRAGE =============
