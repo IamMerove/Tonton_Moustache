@@ -16,14 +16,16 @@ export default function Login() {
       const response = await fetch("http://localhost:8000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // pour gérer les sessions
         body: JSON.stringify({ email, password }),
       });
 
-      if (response.ok) {
-        navigate("/Accueil");
+      const data = await response.json();
+
+      if (response.ok && data.access_token) {
+        // ✅ Stocke le token dans le localStorage
+        localStorage.setItem("token", data.access_token);
+        navigate("/Accueil"); // redirige après connexion
       } else {
-        const data = await response.json();
         setError(data.detail || "Identifiants invalides");
       }
     } catch (err) {
