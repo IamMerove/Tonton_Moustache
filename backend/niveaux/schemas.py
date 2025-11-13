@@ -13,20 +13,19 @@ class NiveauBase(BaseModel):
 
 class NiveauCreate(NiveauBase):
     """Données requises pour créer un niveau"""
-    nom_niveau: str = Field(..., min_length=2, max_length=50, description="Nom du niveau")
+    pass
 
 # ============= SCHÉMAS POUR MISE À JOUR =============
 
 class NiveauUpdate(BaseModel):
     """Données optionnelles pour modifier un niveau"""
-    nom_niveau: str = Field(..., min_length=2, max_length=50, description="Nom du niveau")
+    nom_niveau: Optional[str] = Field(None, min_length=2, max_length=50, description="Nom du niveau")
 
 # ============= SCHÉMAS DE RÉPONSE =============
 
 class NiveauResponse(NiveauBase):
     """Données retournées par l'API"""
     id_niveau: int
-    nom_niveau: str = Field(..., min_length=2, max_length=50, description="Nom du niveau")
     
     class Config:
         from_attributes = True

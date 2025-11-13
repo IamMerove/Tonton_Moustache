@@ -16,8 +16,8 @@ from .crud import NiveauCRUD
 router = APIRouter()
 
 # Route pour la création d'un role
-@router.post("/create_Niveau", response_model=NiveauResponse, status_code=status.HTTP_201_CREATED)
-def create_role(niveau: NiveauCreate, db: Session = Depends(get_db)):
+@router.post("/create_niveau", response_model=NiveauResponse, status_code=status.HTTP_201_CREATED)
+def create_niveau(niveau: NiveauCreate, db: Session = Depends(get_db)):
     """
     Créer un nouveau Niveau
     
@@ -25,7 +25,7 @@ def create_role(niveau: NiveauCreate, db: Session = Depends(get_db)):
 
     """
     # Vérifier si le niveau existe déjà
-    existing_niveau = NiveauCRUD.create(db, niveau.nom_niveau)
+    existing_niveau = NiveauCRUD.get_by_name(db, niveau.nom_niveau)
     if existing_niveau:
         raise HTTPException(
             status_code=400, 
@@ -51,50 +51,50 @@ def list_niveaux(
     """
     return NiveauCRUD.get_all(db, skip=skip, limit=limit, search=search)
 
-# Route pour récupéré un role par son id
-@router.get("/{role_id}", response_model=RoleResponse)
-def get_role(role_id: int, db: Session = Depends(get_db)):
+# Route pour récupéré un niveau par son id
+@router.get("/{niveau_id}", response_model=NiveauResponse)
+def get_niveau(niveau_id: int, db: Session = Depends(get_db)):
     """
-    Récupérer un role par son ID
+    Récupérer un niveau par son ID
     """
-    role = RoleCRUD.get_by_id(db, role_id)
-    if not role:
+    niveau = NiveauCRUD.get_by_id(db, niveau_id)
+    if not niveau:
         raise HTTPException(
             status_code=404, 
-            detail="Role non trouvé"
+            detail="Niveau non trouvé"
         )
-    return role
+    return niveau
 
-@router.put("/{role_id}", response_model=RoleResponse)
-def update_role(
-    role_id: int, 
-    role_update: RoleUpdate, 
+@router.put("/{niveau_id}", response_model=NiveauResponse)
+def update_niveau(
+    niveau_id: int, 
+    niveau_update: NiveauUpdate, 
     db: Session = Depends(get_db)
 ):
     """
-    Mettre à jour un role
+    Mettre à jour un niveau
     
     Seuls les champs fournis seront modifiés
     """
-    updated_role = RoleCRUD.update(db, role_id, role_update)
-    if not updated_role:
+    updated_niveau = NiveauCRUD.update(db, niveau_id, niveau_update)
+    if not updated_niveau:
         raise HTTPException(
             status_code=404, 
-            detail="Role non trouvé"
+            detail="Niveau non trouvé"
         )
-    return updated_role
+    return updated_niveau
 
-@router.delete("/{role_id}")
-def delete_role(role_id: int, db: Session = Depends(get_db)):
+@router.delete("/{niveau_id}")
+def delete_niveau(niveau_id: int, db: Session = Depends(get_db)):
     """
-    Supprimer un utilisateur
+    Supprimer un niveau
     """
-    success = RoleCRUD.delete(db, role_id)
+    success = NiveauCRUD.delete(db, niveau_id)
     if not success:
         raise HTTPException(
             status_code=404, 
-            detail="Role non trouvé"
+            detail="Niveau non trouvé"
         )
-    return {"message": "Role supprimé avec succès"}
+    return {"message": "Niveau supprimé avec succès"}
 
 

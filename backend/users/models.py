@@ -8,25 +8,6 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database import Base
 
-# ============= MODÈLE NIVEAU =============
-class Niveau(Base):
-    __tablename__ = "niveau"
-    
-    id_niveau = Column(Integer, primary_key=True, index=True)
-    libelle_niveau = Column(String(50), nullable=False)
-    
-    # Relation inverse : tous les étudiants de ce niveau
-    etudiants = relationship("User", back_populates="niveau")
-
-# ============= MODÈLE ROLE =============
-class Role(Base):
-    __tablename__ = "role"
-    
-    id_role = Column(Integer, primary_key=True, index=True)
-    nom_role = Column(String(50), nullable=False, unique=True)
-    
-    # Relation inverse : tous les étudiants avec ce rôle
-    etudiants = relationship("User", back_populates="role")
 
 # ============= MODÈLE USER (ÉTUDIANT) =============
 class User(Base):

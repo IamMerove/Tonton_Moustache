@@ -1,15 +1,15 @@
 
-from .users_routes import router
-from .models import User
-from .schemas import UserCreate, UserUpdate, UserResponse, UserLogin, UserPublic
-from .crud import UserCRUD
+from .roles_routes import router
+from .models import Role
+from .schemas import RoleCreate, RoleResponse, RoleUpdate
+from .crud import RoleCRUD
 
 # Export des éléments principaux
 __all__ = [
     "router",
-    "Roles", 
-    "RolesCreate", 
-    "RolesUpdate", 
-    "RolesResponse", 
-    "RolesCRUD"
+    "Role", 
+    "RoleCreate", 
+    "RoleUpdate", 
+    "RoleResponse", 
+    "RoleCRUD"
 ]

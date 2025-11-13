@@ -25,7 +25,7 @@ def create_role(role: RoleCreate, db: Session = Depends(get_db)):
 
     """
     # Vérifier si le role existe déjà
-    existing_role = RoleCRUD.create(db, role.nom_role)
+    existing_role = RoleCRUD.get_by_name(db, role.nom_role)
     if existing_role:
         raise HTTPException(
             status_code=400, 

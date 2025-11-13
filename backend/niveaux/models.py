@@ -10,7 +10,10 @@ from database import Base
 
 # ============= MODÈLE NIVEAUX =============
 class Niveau(Base):
-    __tablename__ = "niveaux"
+    __tablename__ = "niveau"  # Nom de table au singulier pour correspondre aux Foreign Keys
     
-    id_niveau= Column(Integer, primary_key=True, index=True, autoincrement=True)
+    id_niveau = Column(Integer, primary_key=True, index=True, autoincrement=True)
     nom_niveau = Column(String(50), nullable=False)
+    
+    # Relation inverse : tous les étudiants de ce niveau
+    etudiants = relationship("User", back_populates="niveau")

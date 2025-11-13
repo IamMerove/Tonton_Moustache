@@ -17,8 +17,7 @@ class RoleCRUD:
         
         # Créer l'instance
         db_role = Role(
-            nom=role_data.nom,
-            
+            nom_role=role_data.nom_role,
         )
         
         # Sauvegarder
@@ -26,6 +25,11 @@ class RoleCRUD:
         db.commit()
         db.refresh(db_role)
         return db_role
+    
+    @staticmethod
+    def get_by_name(db: Session, nom_role: str) -> Optional[Role]:
+        """Récupérer un role par nom"""
+        return db.query(Role).filter(Role.nom_role == nom_role).first()
     
     @staticmethod
     def get_all(db: Session, skip: int = 0, limit: int = 100, search: str = None) -> List[Role]:
@@ -36,7 +40,7 @@ class RoleCRUD:
         if search:
             query = query.filter(
                 or_(
-                    Role.nom.contains(search),
+                    Role.nom_role.contains(search),
                 )
             )
         

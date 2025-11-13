@@ -16,8 +16,7 @@ class NiveauCRUD:
         
         # Créer l'instance
         db_niveau = Niveau(
-            nom=niveau_data.nom,
-            
+            nom_niveau=niveau_data.nom_niveau,
         )
         
         # Sauvegarder
@@ -25,6 +24,11 @@ class NiveauCRUD:
         db.commit()
         db.refresh(db_niveau)
         return db_niveau
+    
+    @staticmethod
+    def get_by_name(db: Session, nom_niveau: str) -> Optional[Niveau]:
+        """Récupérer un niveau par nom"""
+        return db.query(Niveau).filter(Niveau.nom_niveau == nom_niveau).first()
     
     @staticmethod
     def get_all(db: Session, skip: int = 0, limit: int = 100, search: str = None) -> List[Niveau]:
@@ -35,7 +39,7 @@ class NiveauCRUD:
         if search:
             query = query.filter(
                 or_(
-                    Niveau.nom.contains(search),
+                    Niveau.nom_niveau.contains(search),
                 )
             )
         
