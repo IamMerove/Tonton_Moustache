@@ -9,10 +9,8 @@ from agents.models import Agent
 from roles import router as roles_router
 from niveaux import router as niveaux_router
 from sessions import router as sessions_router
-from users.models import User
 from niveaux.models import Niveau
 from roles.models import Role
-from agents.models import Agent
 from sessions.models import SessionConversation
 from database import engine, Base
 
