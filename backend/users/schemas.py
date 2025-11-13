@@ -29,8 +29,6 @@ class UserUpdate(BaseModel):
     email: Optional[str] = None
     avatar: Optional[str] = Field(None, max_length=255)
     id_niveau: Optional[int] = None
-    id_role: Optional[int] = None
-    consentement_rgpd: Optional[bool] = None
 
 # ============= SCHÉMAS DE RÉPONSE =============
 

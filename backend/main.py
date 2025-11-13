@@ -6,6 +6,10 @@ from users import router as users_router
 from agents.agents_routes import router as agents_router
 from users.models import User
 from agents.models import Agent
+from roles import router as roles_router
+from niveaux import router as niveaux_router
+from niveaux.models import Niveau
+from roles.models import Role
 from database import engine, Base
 
 # ============= CRÉATION DES TABLES =============
@@ -61,6 +65,21 @@ app.include_router(
     prefix="/agents",
     tags=["Agents"],
     responses={404: {"description": "Agent non trouvé"}}
+  
+)
+
+app.include_router(
+    roles_router, 
+    prefix="/roles", 
+    tags=["Roles"],
+    responses={404: {"description": "Role non trouvé"}}
+)
+
+app.include_router(
+    niveaux_router, 
+    prefix="/niveau", 
+    tags=["Niveaux"],
+    responses={404: {"description": "Niveau non trouvé"}}
 )
 
 # ============= DÉMARRAGE =============
