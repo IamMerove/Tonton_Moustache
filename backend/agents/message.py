@@ -12,7 +12,7 @@ class Message(Base):
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text, nullable=False)  # Contenu du message (peut être long)
     role = Column(String(10), nullable=False)  # 'user' ou 'assistant'
-    agent_id = Column(Integer, ForeignKey("agent.id"), nullable=False)  # Lien vers Agent
+    agent_id = Column(Integer, ForeignKey("agent.id_agent"), nullable=False)  # Lien vers Agent
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relation optionnelle : Récupère l'agent parent
