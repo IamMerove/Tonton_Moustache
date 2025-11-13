@@ -42,7 +42,7 @@ class AgentUpdate(BaseModel):
     reasoning_effort: Optional[str] = Field(None)
     id_matieres: Optional[int] = Field(None)
 
-# ============= SCHÉMAS DE RÉPONSE =============
+
 
 class AgentResponse(AgentBase):
     """Données retournées par l'API"""
@@ -58,4 +58,26 @@ class AgentResponse(AgentBase):
     
     class Config:
         from_attributes = True
+
+# ============= SCHÉMAS MESSAGE IA =============
+
+class ChatMessage(BaseModel):
+    """
+    Schéma pour les messages envoyés au chat IA.
+    """
+    content: str
+    agent_id: Optional[int] = None  # Optionnel : Associe à un agent pour persistance
+
+class MessageResponse(BaseModel):
+    """
+    Schéma de réponse pour un message persistant.
+    """
+    id: int
+    content: str
+    role: str  # 'user' ou 'assistant'
+    agent_id: int
+    created_at: Optional[str] = None
+
+    class Config:
+        from_attributes = True  # Pour SQLAlchemy compat
 
