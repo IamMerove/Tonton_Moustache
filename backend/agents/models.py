@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Text, Numeric, Enum
 from sqlalchemy.orm import relationship
+=======
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Float
+>>>>>>> a3edcbb00f2e45b6da6604430f4b1385540d459d
 from sqlalchemy.sql import func
 import sys
 import os
@@ -18,9 +22,9 @@ class Agent(Base):
     est_actif = Column(Boolean, nullable=False, default=True)
     description = Column(String(255), nullable=False)
     date_creation = Column(DateTime, nullable=False, server_default=func.now())
-    consentement_rgpdprompt_system = Column(Boolean, nullable=False, default=False)
+    prompt_system = Column(String, nullable=False, default=False)
     model = Column(String(100), nullable=False)
-    temperature = Column(float, nullable=False, default=0.7)
+    temperature = Column(Float, nullable=False, default=0.7)
     max_tokens = Column(Integer, nullable=False)
     top_p= Column(Integer, nullable=False)
     reasoning_effort=Column(Integer, nullable=False)
