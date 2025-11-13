@@ -19,7 +19,7 @@ class SessionConversation(Base):
     date_heure_fin = Column(DateTime, nullable=True)
     
     # Clés étrangères
-    id_agents = Column(Integer, ForeignKey("agent.id_agents"), nullable=False)
+    id_agents = Column(Integer, ForeignKey("agents.id_agents"), nullable=False)
     id_etudiant = Column(Integer, ForeignKey("etudiants.id_etudiant"), nullable=False)
     
     # Relations
