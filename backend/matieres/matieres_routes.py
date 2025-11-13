@@ -9,162 +9,111 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database import get_db
 
 # Imports locaux
-from .schemas import UserCreate, UserUpdate, UserResponse, UserLogin, UserPublic
-from .crud import UserCRUD
+from .schemas import MatiereCreate, MatiereUpdate, MatiereResponse, MatierePublic
+from .crud import MatiereCRUD
 
 router = APIRouter()
 
 # ============= ROUTES UTILISATEURS =============
 
-@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
+@router.post("/", response_model=MatiereResponse, status_code=status.HTTP_201_CREATED)
+def create_matiere(matiere: MatiereCreate, db: Session = Depends(get_db)):
     """
-    Créer un nouvel utilisateur
+    Créer une nouvelle matière
     
-    - **name**: Nom de l'utilisateur (2-100 caractères)
-    - **email**: Email valide et unique
-    - **password**: Mot de passe (minimum 6 caractères)
-    - **description**: Description optionnelle
+    - **nom_matieres**: Nom de la matière (2-100 caractères)
+    - **description_matière**: Description optionnelle
     """
-    # Vérifier si l'email existe déjà
-    existing_user = UserCRUD.get_by_email(db, user.email)
-    if existing_user:
+    # Vérifier si la matière existe déjà
+    existing_matiere = MatiereCRUD.get_by_name(db, matiere.name)
+    if existing_matiere:
         raise HTTPException(
             status_code=400, 
-            detail="Cet email est déjà utilisé"
+            detail="Cette matière est déjà utilisée"
         )
     
-    return UserCRUD.create(db, user)
+    return MatiereCRUD.create(db, matiere)
 
-@router.get("/", response_model=List[UserResponse])
-def list_users(
+@router.get("/", response_model=List[MatiereResponse])
+def list_matieres(
     skip: int = Query(0, ge=0, description="Nombre d'éléments à ignorer"),
     limit: int = Query(100, ge=1, le=1000, description="Nombre max d'éléments"),
-    search: Optional[str] = Query(None, description="Recherche par nom ou email"),
+    search: Optional[str] = Query(None, description="Recherche par nom"),
     db: Session = Depends(get_db)
 ):
     """
-    Récupérer la liste des utilisateurs
+    Récupérer la liste des matières
     
     - **skip**: Pagination - éléments à ignorer
     - **limit**: Pagination - nombre max d'éléments (1-1000)
-    - **search**: Recherche optionnelle dans nom/email
+    - **search**: Recherche optionnelle dans nom
     """
-    return UserCRUD.get_all(db, skip=skip, limit=limit, search=search)
+    return MatiereCRUD.get_all(db, skip=skip, limit=limit, search=search)
 
-@router.get("/{user_id}", response_model=UserResponse)
-def get_user(user_id: int, db: Session = Depends(get_db)):
+@router.get("/{matiere_id}", response_model=MatiereResponse)
+def get_matiere(matiere_id: int, db: Session = Depends(get_db)):
     """
-    Récupérer un utilisateur par son ID
+    Récupérer une matière par son nom
     """
-    user = UserCRUD.get_by_id(db, user_id)
-    if not user:
+    matiere = MatiereCRUD.get_by_name(db, matiere_id)
+    if not matiere:
         raise HTTPException(
             status_code=404, 
-            detail="Utilisateur non trouvé"
+            detail="Matière non trouvée"
         )
-    return user
+    return matiere
 
-@router.put("/{user_id}", response_model=UserResponse)
-def update_user(
-    user_id: int, 
-    user_update: UserUpdate, 
+@router.put("/{matiere_id}", response_model=MatiereResponse)
+def update_matiere(
+    matiere_id: int, 
+    matiere_update: MatiereUpdate, 
     db: Session = Depends(get_db)
 ):
     """
-    Mettre à jour un utilisateur
+    Mettre à jour une matière
     
     Seuls les champs fournis seront modifiés
     """
-    updated_user = UserCRUD.update(db, user_id, user_update)
-    if not updated_user:
+    updated_matiere = MatiereCRUD.update(db, matiere_id, matiere_update)
+    if not updated_matiere:
         raise HTTPException(
             status_code=404, 
-            detail="Utilisateur non trouvé"
+            detail="Matière non trouvée"
         )
-    return updated_user
+    return updated_matiere
 
-@router.delete("/{user_id}")
-def delete_user(user_id: int, db: Session = Depends(get_db)):
+@router.delete("/{matiere_id}")
+def delete_matiere(matiere_id: int, db: Session = Depends(get_db)):
     """
-    Supprimer un utilisateur
+    Supprimer une matière
     """
-    success = UserCRUD.delete(db, user_id)
+    success = MatiereCRUD.delete(db, matiere_id)
     if not success:
         raise HTTPException(
             status_code=404, 
-            detail="Utilisateur non trouvé"
+            detail="Matière non trouvée"
         )
-    return {"message": "Utilisateur supprimé avec succès"}
+    return {"message": "Matière supprimée avec succès"}
 
 # ============= ROUTES SPÉCIALISÉES =============
 
-@router.post("/login")
-def login(credentials: UserLogin, db: Session = Depends(get_db)):
+@router.get("/name/{name}/exists")
+def check_name_exists(name: str, db: Session = Depends(get_db)):
     """
-    Authentifier un utilisateur
-    
-    - **email**: Email de l'utilisateur
-    - **password**: Mot de passe
+    Vérifier si une matière existe déjà
     """
-    user = UserCRUD.authenticate(db, credentials.email, credentials.password)
-    if not user:
-        raise HTTPException(
-            status_code=401, 
-            detail="Email ou mot de passe incorrect"
-        )
-    
-    if not user.is_active:
-        raise HTTPException(
-            status_code=403, 
-            detail="Compte utilisateur désactivé"
-        )
-    
-    return {
-        "message": "Connexion réussie",
-        "user_id": user.id,
-        "user_name": user.name
-    }
+    matiere = MatiereCRUD.get_by_name(db, name)
+    return {"exists": matiere is not None}
 
-@router.get("/email/{email}/exists")
-def check_email_exists(email: str, db: Session = Depends(get_db)):
+@router.get("/{matiere_id}/public", response_model=MatierePublic)
+def get_matiere_public_info(matiere_id: int, db: Session = Depends(get_db)):
     """
-    Vérifier si un email existe déjà
+    Récupérer les informations publiques d'une matière
     """
-    user = UserCRUD.get_by_email(db, email)
-    return {"exists": user is not None}
-
-@router.patch("/{user_id}/activate")
-def activate_user(user_id: int, db: Session = Depends(get_db)):
-    """Activer un compte utilisateur"""
-    user = UserCRUD.set_active_status(db, user_id, True)
-    if not user:
-        raise HTTPException(
-            status_code=404,
-            detail="Utilisateur non trouvé"
-        )
-    return {"message": "Utilisateur activé"}
-
-@router.patch("/{user_id}/deactivate")
-def deactivate_user(user_id: int, db: Session = Depends(get_db)):
-    """Désactiver un compte utilisateur"""
-    user = UserCRUD.set_active_status(db, user_id, False)
-    if not user:
-        raise HTTPException(
-            status_code=404,
-            detail="Utilisateur non trouvé"
-        )
-    return {"message": "Utilisateur désactivé"}
-
-@router.get("/{user_id}/public", response_model=UserPublic)
-def get_user_public_info(user_id: int, db: Session = Depends(get_db)):
-    """
-    Récupérer les informations publiques d'un utilisateur
-    """
-    user = UserCRUD.get_by_id(db, user_id)
-    if not user:
+    matiere = MatiereCRUD.get_by_id(db, matiere_id)
+    if not matiere:
         raise HTTPException(
             status_code=404, 
-            detail="Utilisateur non trouvé"
+            detail="Matière non trouvée"
         )
-    return user
+    return matiere

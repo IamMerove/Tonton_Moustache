@@ -5,122 +5,82 @@ import bcrypt
 from datetime import datetime
 
 # Imports locaux
-from .models import User
-from .schemas import UserCreate, UserUpdate
+from .models import Matiere
+from .schemas import MatiereCreate, MatiereUpdate
 
 # ============= FONCTIONS UTILITAIRES =============
 
-def hash_password(password: str) -> str:
-    """Hasher un mot de passe avec bcrypt (compatible avec PHP password_hash)"""
-    # Générer le salt et hasher le mot de passe
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed.decode('utf-8')
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Vérifier un mot de passe"""
-    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
-
 # ============= CRUD UTILISATEURS =============
 
-class UserCRUD:
-    """Classe pour toutes les opérations utilisateurs"""
+class MatiereCRUD:
+    """Classe pour toutes les opérations matières"""
     
     @staticmethod
-    def get_by_id(db: Session, user_id: int) -> Optional[User]:
-        """Récupérer un étudiant par ID"""
-        return db.query(User).filter(User.id_etudiant == user_id).first()
+    def get_by_id(db: Session, matiere_id: int) -> Optional[Matiere]:
+        """Récupérer une matière par ID"""
+        return db.query(Matiere).filter(Matiere.id_matieres == matiere_id).first()
     
     @staticmethod
-    def get_by_email(db: Session, email: str) -> Optional[User]:
-        """Récupérer un étudiant par email"""
-        return db.query(User).filter(User.email == email.lower()).first()
+    def get_by_name(db: Session, name: str) -> Optional[Matiere]:
+        """Récupérer une matière par nom"""
+        return db.query(Matiere).filter(Matiere.nom_matieres == name.lower()).first()
     
     @staticmethod
-    def get_all(db: Session, skip: int = 0, limit: int = 100, search: str = None) -> List[User]:
-        """Récupérer tous les étudiants avec recherche optionnelle"""
-        query = db.query(User)
+    def get_all(db: Session, skip: int = 0, limit: int = 100, search: str = None) -> List[Matiere]:
+        """Récupérer toutes les matières avec recherche optionnelle"""
+        query = db.query(Matiere)
         
         # Recherche optionnelle
         if search:
             query = query.filter(
                 or_(
-                    User.nom.contains(search),
-                    User.prenom.contains(search),
-                    User.email.contains(search)
+                    Matiere.nom_matieres.contains(search)
                 )
             )
         
         return query.offset(skip).limit(limit).all()
     
     @staticmethod
-    def create(db: Session, user_data: UserCreate) -> User:
-        """Créer un nouvel étudiant"""
-        # Hasher le mot de passe
-        hashed_password = hash_password(user_data.password)
+    def create(db: Session, matiere_data: MatiereCreate) -> Matiere:
+        """Créer une nouvelle matière"""
         
         # Créer l'instance
-        db_user = User(
-            nom=user_data.nom,
-            prenom=user_data.prenom,
-            email=user_data.email.lower(),
-            avatar=user_data.avatar,
-            passwordhash=hashed_password,
-            date_inscription=datetime.utcnow(),
-            consentement_rgpd=user_data.consentement_rgpd,
-            id_niveau=user_data.id_niveau,
-            id_role=user_data.id_role
+        db_matiere = Matiere(
+            nom_matieres=matiere_data.nom_matieres,
+            description_matiere=matiere_data.description_matiere
         )
         
         # Sauvegarder
-        db.add(db_user)
+        db.add(db_matiere)
         db.commit()
-        db.refresh(db_user)
-        return db_user
+        db.refresh(db_matiere)
+        return db_matiere
     
     @staticmethod
-    def update(db: Session, user_id: int, user_data: UserUpdate) -> Optional[User]:
-        """Mettre à jour un étudiant"""
-        db_user = UserCRUD.get_by_id(db, user_id)
-        if not db_user:
+    def update(db: Session, matiere_id: int, matiere_data: MatiereUpdate) -> Optional[Matiere]:
+        """Mettre à jour une matière"""
+        db_matiere = MatiereCRUD.get_by_id(db, matiere_id)
+        if not db_matiere:
             return None
         
         # Mettre à jour seulement les champs fournis
-        update_data = user_data.dict(exclude_unset=True)
+        update_data = matiere_data.dict(exclude_unset=True)
         for field, value in update_data.items():
             if field == "email" and value:
                 value = value.lower()  # Email en minuscules
-            setattr(db_user, field, value)
+            setattr(db_matiere, field, value)
         
         db.commit()
-        db.refresh(db_user)
-        return db_user
+        db.refresh(db_matiere)
+        return db_matiere
     
     @staticmethod
-    def delete(db: Session, user_id: int) -> bool:
-        """Supprimer un étudiant"""
-        db_user = UserCRUD.get_by_id(db, user_id)
-        if db_user:
-            db.delete(db_user)
+    def delete(db: Session, matiere_id: int) -> bool:
+        """Supprimer une matière"""
+        db_matiere = UserCRUD.get_by_id(db, matiere_id)
+        if db_matiere:
+            db.delete(db_matiere)
             db.commit()
             return True
         return False
     
-    @staticmethod
-    def authenticate(db: Session, email: str, password: str) -> Optional[User]:
-        """Authentifier un étudiant"""
-        user = UserCRUD.get_by_email(db, email)
-        if user and verify_password(password, user.passwordhash):
-            return user
-        return None
-    
-    @staticmethod
-    def set_rgpd_consent(db: Session, user_id: int, consent: bool) -> Optional[User]:
-        """Définir le consentement RGPD"""
-        db_user = UserCRUD.get_by_id(db, user_id)
-        if db_user:
-            db_user.consentement_rgpd = consent
-            db.commit()
-            db.refresh(db_user)
-        return db_user
-

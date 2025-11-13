@@ -1,18 +1,18 @@
 # matieres/__init__.py - Facilite l'importation du module matieres
 
 from .matieres_routes import router
-from .models import User
-from .schemas import UserCreate, UserUpdate, UserResponse, UserLogin, UserPublic
-from .crud import UserCRUD
+from .models import Matiere
+from .schemas import MatiereCreate, MatiereUpdate, MatiereResponse, MatierePublic
+from .crud import MatiereCRUD
 
 # Export des éléments principaux
 __all__ = [
     "router",
-    "User", 
-    "UserCreate", 
-    "UserUpdate", 
-    "UserResponse", 
-    "UserLogin", 
-    "UserPublic",
-    "UserCRUD"
+    "Matiere", 
+    "MatiereCreate", 
+    "MatiereUpdate", 
+    "MatiereResponse", 
+    "MatiereLogin", 
+    "MatierePublic",
+    "MatiereCRUD"
 ]
