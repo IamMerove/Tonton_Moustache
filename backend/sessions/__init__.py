@@ -12,5 +12,6 @@ __all__ = [
     "SessionCreate", 
     "SessionResponse", 
     "SessionUpdate",
-    "SessionWithDetails"
+    "SessionWithDetails",
+    "SessionCRUD"
 ]
