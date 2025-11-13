@@ -3,11 +3,11 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base  # Importe Base de ton database.py
 
-class Message(Base):
+class AgentMessage(Base):
     """
     Modèle pour les messages du chat, lié à un Agent.
     """
-    __tablename__ = "messages"
+    __tablename__ = "agent_messages"
 
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text, nullable=False)  # Contenu du message (peut être long)

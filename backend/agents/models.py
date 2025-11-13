@@ -33,7 +33,7 @@ class Agent(Base):
     matiere = relationship("Matiere", back_populates="agents")
     sessions = relationship("SessionConversation", back_populates="agent")
 
-    messages = relationship("Message", back_populates="agent", cascade="all, delete-orphan")
+    messages = relationship("AgentMessage", back_populates="agent", cascade="all, delete-orphan")
 
-from .message import Message
+from .message import AgentMessage
     
