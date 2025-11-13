@@ -12,7 +12,7 @@ services:
       - backend_db:/app/data
     environment:
       - PYTHONUNBUFFERED=1
-    command: sh start.sh
+    command: sh -c "python init_admin.py && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     networks:
       - tonton_network
     restart: unless-stopped
