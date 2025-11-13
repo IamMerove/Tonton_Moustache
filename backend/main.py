@@ -5,9 +5,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from users import router as users_router
 from roles import router as roles_router
 from niveaux import router as niveaux_router
+from sessions import router as sessions_router
 from users.models import User
 from niveaux.models import Niveau
 from roles.models import Role
+from agents.models import Agent
+from sessions.models import SessionConversation
 from database import engine, Base
 
 # ============= CRÉATION DES TABLES =============
@@ -70,6 +73,13 @@ app.include_router(
     prefix="/niveau", 
     tags=["Niveaux"],
     responses={404: {"description": "Niveau non trouvé"}}
+)
+
+app.include_router(
+    sessions_router, 
+    prefix="/sessions", 
+    tags=["Sessions"],
+    responses={404: {"description": "Session non trouvée"}}
 )
 
 # ============= DÉMARRAGE =============
