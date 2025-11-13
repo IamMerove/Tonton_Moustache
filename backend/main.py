@@ -17,6 +17,8 @@ from agents.agents_routes import router as agents_router
 from roles import router as roles_router
 from niveaux import router as niveaux_router
 from sessions import router as sessions_router
+from messages.messages_routes import router as messages_router
+from database import engine, Base
 
 # ============= CRÉATION DES TABLES =============
 Base.metadata.create_all(bind=engine)
@@ -86,6 +88,14 @@ app.include_router(
     prefix="/niveau", 
     tags=["Niveaux"],
     responses={404: {"description": "Niveau non trouvé"}}
+)
+
+app.include_router(
+    messages_router,
+    prefix="/messages",
+    tags=["Messages"],
+    responses={404: {"description": "Message non trouvé"}}
+    
 )
 
 app.include_router(
