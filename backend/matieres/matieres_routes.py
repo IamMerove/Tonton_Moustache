@@ -21,11 +21,11 @@ def create_matiere(matiere: MatiereCreate, db: Session = Depends(get_db)):
     """
     Créer une nouvelle matière
     
-    - **nom_matieres**: Nom de la matière (2-100 caractères)
-    - **description_matière**: Description optionnelle
+    - **nom_matieres**: Nom de la matière (2-50 caractères)
+    - **description_matiere**: Description optionnelle
     """
     # Vérifier si la matière existe déjà
-    existing_matiere = MatiereCRUD.get_by_name(db, matiere.name)
+    existing_matiere = MatiereCRUD.get_by_name(db, matiere.nom_matieres)
     if existing_matiere:
         raise HTTPException(
             status_code=400, 
@@ -53,9 +53,9 @@ def list_matieres(
 @router.get("/{matiere_id}", response_model=MatiereResponse)
 def get_matiere(matiere_id: int, db: Session = Depends(get_db)):
     """
-    Récupérer une matière par son nom
+    Récupérer une matière par son ID
     """
-    matiere = MatiereCRUD.get_by_name(db, matiere_id)
+    matiere = MatiereCRUD.get_by_id(db, matiere_id)
     if not matiere:
         raise HTTPException(
             status_code=404, 

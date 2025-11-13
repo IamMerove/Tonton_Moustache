@@ -32,7 +32,7 @@ class NiveauCRUD:
     
     @staticmethod
     def get_all(db: Session, skip: int = 0, limit: int = 100, search: str = None) -> List[Niveau]:
-        """Récupérer tous les roles"""
+        """Récupérer tous les niveaux"""
         query = db.query(Niveau)
         
         # Recherche optionnelle

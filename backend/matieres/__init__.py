@@ -12,7 +12,6 @@ __all__ = [
     "MatiereCreate", 
     "MatiereUpdate", 
     "MatiereResponse", 
-    "MatiereLogin", 
     "MatierePublic",
     "MatiereCRUD"
 ]

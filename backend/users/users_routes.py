@@ -114,16 +114,14 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
             detail="Email ou mot de passe incorrect"
         )
     
-    if not user.is_active:
-        raise HTTPException(
-            status_code=403, 
-            detail="Compte utilisateur désactivé"
-        )
-    
     return {
         "message": "Connexion réussie",
-        "user_id": user.id,
-        "user_name": user.name
+        "user_id": user.id_etudiant,
+        "nom": user.nom,
+        "prenom": user.prenom,
+        "email": user.email,
+        "role_id": user.id_role,
+        "niveau_id": user.id_niveau
     }
 
 @router.get("/email/{email}/exists")

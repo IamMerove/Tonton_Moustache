@@ -1,71 +1,61 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 
 # ============= SCHÉMAS DE BASE =============
 
 class AgentBase(BaseModel):
-    """Champs communs pour les agents """
- 
-    id_agent : int = Field(...,description="ID de l'agent")
-    nom_agent : str = Field(...,min_length=2, max_length=100, description="Nom de l'agent")
-    type_agent : str = Field(...,min_length=2, max_length=50, description="Type de l'agent")
-    avatar_agent: str = Field(...,min_length=2, max_length=255, description="URL de l'avatar de l'agent")
-    est_actif: bool = Field(default=False, description="Indique si l'agent est actif")
-    description: str = Field(...,min_length=2, max_length=255, description="Description de l'agent")
+    """Champs communs pour les agents"""
+    nom_agent: str = Field(..., min_length=2, max_length=50, description="Nom de l'agent")
+    type_agent: str = Field(..., min_length=2, max_length=50, description="Type de l'agent")
+    avatar_agent: Optional[str] = Field(None, max_length=255, description="URL de l'avatar de l'agent")
+    est_actif: bool = Field(default=True, description="Indique si l'agent est actif")
+    description: Optional[str] = Field(None, description="Description de l'agent")
    
 
 # ============= SCHÉMAS POUR CRÉATION =============
 
 class AgentCreate(AgentBase):
     """Données requises pour créer un agent"""
-    
-    prompt_system: str= Field(...,description="Prompt system de l'agent")
-    model : str = Field(...,min_length=2, max_length=50, description="Modele de l'agent")
-    temperature : float =Field(...,description="Parametre de la temperature pour la generation")
-    max_tokens :int =Field(...,description="Nombre maximum de tokens")
-    top_p:float= Field(...,description="Top P pour le filtrage des tokens")
-    reasoning_effort:int= Field(..., description="Niveau d'effort")
-    id_matieres: int=Field(..., description="ID des matières associées")
+    prompt_system: str = Field(..., description="Prompt système de l'agent")
+    model: str = Field(default='openai/gpt-oss-20b', max_length=100, description="Modèle de l'agent")
+    temperature: float = Field(default=0.7, ge=0.0, le=2.0, description="Paramètre de température")
+    max_tokens: int = Field(default=8192, gt=0, description="Nombre maximum de tokens")
+    top_p: float = Field(default=1.0, ge=0.0, le=1.0, description="Top P pour le filtrage")
+    reasoning_effort: str = Field(default='medium', description="Niveau d'effort (low, medium, high)")
+    id_matieres: int = Field(..., description="ID de la matière associée")
 
 # ============= SCHÉMAS POUR MISE À JOUR =============
 
 class AgentUpdate(BaseModel):
-    """Données optionnelles pour modifier un étudiant"""
-    nom: Optional[str] = Field(None, min_length=2, max_length=50)
-    prenom: Optional[str] = Field(None, min_length=2, max_length=50)
-    email: Optional[str] = None
-    avatar: Optional[str] = Field(None, max_length=255)
-    id_niveau: Optional[int] = None
-    id_role: Optional[int] = None
-    consentement_rgpd: Optional[bool] = None
+    """Données optionnelles pour modifier un agent"""
+    nom_agent: Optional[str] = Field(None, min_length=2, max_length=50)
+    type_agent: Optional[str] = Field(None, min_length=2, max_length=50)
+    avatar_agent: Optional[str] = Field(None, max_length=255)
+    est_actif: Optional[bool] = Field(None)
+    description: Optional[str] = Field(None)
+    prompt_system: Optional[str] = Field(None)
+    model: Optional[str] = Field(None, max_length=100)
+    temperature: Optional[float] = Field(None, ge=0.0, le=2.0)
+    max_tokens: Optional[int] = Field(None, gt=0)
+    top_p: Optional[float] = Field(None, ge=0.0, le=1.0)
+    reasoning_effort: Optional[str] = Field(None)
+    id_matieres: Optional[int] = Field(None)
 
 # ============= SCHÉMAS DE RÉPONSE =============
 
 class AgentResponse(AgentBase):
     """Données retournées par l'API"""
-    id_etudiant: int
-    date_inscription: datetime
-    consentement_rgpd: bool
+    id_agents: int = Field(..., description="Identifiant unique de l'agent")
+    date_creation: datetime
+    prompt_systeme: str
+    model: str
+    temperature: float
+    max_tokens: int
+    top_p: float
+    reasoning_effort: str
+    id_matieres: int
     
     class Config:
         from_attributes = True
 
-# ============= SCHÉMAS SPÉCIALISÉS =============
-
-class AgentLogin(BaseModel):
-    """Schéma pour la connexion"""
-    email: str = Field(..., description="Email de connexion")
-    password: str = Field(..., min_length=6)
-
-class AgentPublic(BaseModel):
-    """Informations publiques d'un étudiant"""
-    id_etudiant: int
-    nom: str
-    prenom: str
-    avatar: Optional[str] = None
-    id_niveau: int
-    date_inscription: datetime
-    
-    class Config:
-        from_attributes = True

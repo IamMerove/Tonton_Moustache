@@ -1,13 +1,26 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Imports locaux
+# Imports de la database
+from database import engine, Base
+
+# Imports des modèles (dans l'ordre des dépendances)
+from roles.models import Role
+from niveaux.models import Niveau
+from matieres.models import Matiere
+from agents.models import Agent
+from users.models import User
+from sessions.models import SessionConversation
+from messages.models import Message
+
+# Imports des routers
 from users import router as users_router
+from agents.agents_routes import router as agents_router
 from roles import router as roles_router
 from niveaux import router as niveaux_router
-from users.models import User
-from niveaux.models import Niveau
-from roles.models import Role
+from sessions import router as sessions_router
+from messages.messages_routes import router as messages_router
+from matieres import router as matieres_router
 from database import engine, Base
 
 # ============= CRÉATION DES TABLES =============
@@ -16,7 +29,7 @@ Base.metadata.create_all(bind=engine)
 # ============= CONFIGURATION FASTAPI =============
 app = FastAPI(
     title="Tonton Moustache API",
-    description="API de gestion de recettes de cuisine",
+    description="API de gestion d'agent IA",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -59,6 +72,14 @@ app.include_router(
 )
 
 app.include_router(
+    agents_router,
+    prefix="/agents",
+    tags=["Agents"],
+    responses={404: {"description": "Agent non trouvé"}}
+  
+)
+
+app.include_router(
     roles_router, 
     prefix="/roles", 
     tags=["Roles"],
@@ -70,6 +91,28 @@ app.include_router(
     prefix="/niveau", 
     tags=["Niveaux"],
     responses={404: {"description": "Niveau non trouvé"}}
+)
+
+app.include_router(
+    matieres_router, 
+    prefix="/matieres", 
+    tags=["Matières"],
+    responses={404: {"description": "Matière non trouvée"}}
+)
+
+app.include_router(
+    messages_router,
+    prefix="/messages",
+    tags=["Messages"],
+    responses={404: {"description": "Message non trouvé"}}
+    
+)
+
+app.include_router(
+    sessions_router, 
+    prefix="/sessions", 
+    tags=["Sessions"],
+    responses={404: {"description": "Session non trouvée"}}
 )
 
 # ============= DÉMARRAGE =============

@@ -1,16 +1,13 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from typing import List, Optional
-import bcrypt
 from datetime import datetime
 
 # Imports locaux
 from .models import Matiere
 from .schemas import MatiereCreate, MatiereUpdate
 
-# ============= FONCTIONS UTILITAIRES =============
-
-# ============= CRUD UTILISATEURS =============
+# ============= CRUD MATIÈRES =============
 
 class MatiereCRUD:
     """Classe pour toutes les opérations matières"""
@@ -66,8 +63,6 @@ class MatiereCRUD:
         # Mettre à jour seulement les champs fournis
         update_data = matiere_data.dict(exclude_unset=True)
         for field, value in update_data.items():
-            if field == "email" and value:
-                value = value.lower()  # Email en minuscules
             setattr(db_matiere, field, value)
         
         db.commit()
@@ -77,7 +72,7 @@ class MatiereCRUD:
     @staticmethod
     def delete(db: Session, matiere_id: int) -> bool:
         """Supprimer une matière"""
-        db_matiere = UserCRUD.get_by_id(db, matiere_id)
+        db_matiere = MatiereCRUD.get_by_id(db, matiere_id)
         if db_matiere:
             db.delete(db_matiere)
             db.commit()
