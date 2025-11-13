@@ -13,7 +13,7 @@ class Message(Base):
     __tablename__ = "message"
 
     id_message = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    role = Column(Enum('user', 'assistant', name='role_enum'), nullable=False)
+    role = Column(Enum('etudiant', 'assistant', name='role_enum'), nullable=False)
     contenu = Column(Text, nullable=False)
     date_envoi = Column(DateTime, nullable=False, server_default=func.now())
     id_session = Column(Integer, ForeignKey("session_conversation.id_session"), nullable=False)

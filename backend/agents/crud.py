@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from typing import List, Optional
-import bcrypt
 from datetime import datetime
 
 # Imports locaux
@@ -18,11 +17,11 @@ class AgentCRUD:
     @staticmethod
     def get_by_id(db: Session, agent_id: int) -> Optional[Agent]:
         """Récupérer un agent par ID"""
-        return db.query(Agent).filter(Agent.id_agent == agent_id).first()
+        return db.query(Agent).filter(Agent.id_agents == agent_id).first()  # CORRIGÉ: id_agents
     
     @staticmethod
     def get_all(db: Session, skip: int = 0, limit: int = 100, search: str = None) -> List[Agent]:
-        """Récupérer tous les agent avec recherche optionnelle"""
+        """Récupérer tous les agents avec recherche optionnelle"""
         query = db.query(Agent)
         
         # Recherche optionnelle
@@ -31,7 +30,6 @@ class AgentCRUD:
                 or_(
                     Agent.nom_agent.contains(search),
                     Agent.type_agent.contains(search),
-                    Agent.date_creation.contains(search),
                     Agent.model.contains(search)
                 )
             )
@@ -43,53 +41,54 @@ class AgentCRUD:
         """Créer un nouvel agent"""
         
         # Créer l'instance
-        db_Agent = Agent(
-        
-            id_agent =agent_data.id_agent,
-            nom_agent =agent_data.nom_agent,
-            type_agent =agent_data.type_agent,
-            avatar_agent = agent_data.avatar_agent,
-            est_actif = agent_data.est_actif,
-            date_creation = agent_data.date_creation,
-            prompt_system = agent_data.prompt_system,
-            model = agent_data.model,
-            temperature = agent_data.temperature,
-            max_tokens = agent_data.max_tokoen,
-            top_p=agent_data. top_p,
+        db_agent = Agent(
+            nom_agent=agent_data.nom_agent,
+            type_agent=agent_data.type_agent,
+            avatar_agent=agent_data.avatar_agent,
+            est_actif=agent_data.est_actif,
+            description=agent_data.description,
+            prompt_systeme=agent_data.prompt_system,  # CORRIGÉ: prompt_systeme dans le modèle
+            model=agent_data.model,
+            temperature=agent_data.temperature,
+            max_tokens=agent_data.max_tokens,  # CORRIGÉ: max_tokens
+            top_p=agent_data.top_p,
             reasoning_effort=agent_data.reasoning_effort,
-            id_matieres=agent_data.id_matiere
+            id_matieres=agent_data.id_matieres  # CORRIGÉ: id_matieres
+            # date_creation sera auto-généré par le server_default
         )
         
         # Sauvegarder
-        db.add(db_Agent)
+        db.add(db_agent)
         db.commit()
-        db.refresh(db_Agent)
-        return db_Agent
+        db.refresh(db_agent)
+        return db_agent
     
     @staticmethod
-    def update(db: Session, Agent_id: int, agent_data: AgentUpdate) -> Optional[Agent]:
+    def update(db: Session, agent_id: int, agent_data: AgentUpdate) -> Optional[Agent]:
         """Mettre à jour un agent"""
-        db_Agent = AgentCRUD.get_by_id(db, Agent_id)
-        if not db_Agent:
+        db_agent = AgentCRUD.get_by_id(db, agent_id)
+        if not db_agent:
             return None
         
         # Mettre à jour seulement les champs fournis
         update_data = agent_data.dict(exclude_unset=True)
         for field, value in update_data.items():
-            if field == "email" and value:
-                value = value.lower()  # Email en minuscules
-            setattr(db_Agent, field, value)
+            # Mapper prompt_system vers prompt_systeme dans le modèle
+            if field == "prompt_system":
+                setattr(db_agent, "prompt_systeme", value)
+            else:
+                setattr(db_agent, field, value)
         
         db.commit()
-        db.refresh(db_Agent)
-        return db_Agent
+        db.refresh(db_agent)
+        return db_agent
     
     @staticmethod
-    def delete(db: Session, Agent_id: int) -> bool:
-        """Supprimer un étudiant"""
-        db_Agent = AgentCRUD.get_by_id(db, Agent_id)
-        if db_Agent:
-            db.delete(db_Agent)
+    def delete(db: Session, agent_id: int) -> bool:
+        """Supprimer un agent"""
+        db_agent = AgentCRUD.get_by_id(db, agent_id)
+        if db_agent:
+            db.delete(db_agent)
             db.commit()
             return True
         return False

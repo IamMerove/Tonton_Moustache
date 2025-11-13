@@ -11,7 +11,7 @@ from database import get_db
 from .schemas import MessageCreate, MessageResponse
 from .crud import MessageCRUD
 
-router = APIRouter(prefix="/messages", tags=["messages"])
+router = APIRouter()  # Pas de prefix ni tags ici, définis dans main.py
 
 
 @router.post("/", response_model=MessageResponse, status_code=status.HTTP_201_CREATED)

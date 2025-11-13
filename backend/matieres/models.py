@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import sys
@@ -15,4 +15,7 @@ class Matiere(Base):
     
     id_matieres = Column(Integer, primary_key=True, index=True, autoincrement=True)
     nom_matieres = Column(String(50), nullable=False)
-    description_matiere = Column(String(255), nullable=True)
+    description_matiere = Column(Text, nullable=True)
+    
+    # Relation inverse : tous les agents de cette matière
+    agents = relationship("Agent", back_populates="matiere")

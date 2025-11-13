@@ -7,9 +7,11 @@ from database import engine, Base
 # Imports des modèles (dans l'ordre des dépendances)
 from roles.models import Role
 from niveaux.models import Niveau
+from matieres.models import Matiere
 from agents.models import Agent
 from users.models import User
 from sessions.models import SessionConversation
+from messages.models import Message
 
 # Imports des routers
 from users import router as users_router
@@ -18,6 +20,7 @@ from roles import router as roles_router
 from niveaux import router as niveaux_router
 from sessions import router as sessions_router
 from messages.messages_routes import router as messages_router
+from matieres import router as matieres_router
 from database import engine, Base
 
 # ============= CRÉATION DES TABLES =============
@@ -88,6 +91,13 @@ app.include_router(
     prefix="/niveau", 
     tags=["Niveaux"],
     responses={404: {"description": "Niveau non trouvé"}}
+)
+
+app.include_router(
+    matieres_router, 
+    prefix="/matieres", 
+    tags=["Matières"],
+    responses={404: {"description": "Matière non trouvée"}}
 )
 
 app.include_router(
