@@ -4,16 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 # Imports locaux
 from users import router as users_router
 from agents.agents_routes import router as agents_router
-from users.models import User
-from agents.models import Agent
 from roles import router as roles_router
 from niveaux import router as niveaux_router
 from sessions import router as sessions_router
-from niveaux.models import Niveau
-from roles.models import Role
 from messages.messages_routes import router as messages_router
-from messages.models import Message
-from sessions.models import SessionConversation
 from database import engine, Base
 
 # ============= CRÉATION DES TABLES =============
