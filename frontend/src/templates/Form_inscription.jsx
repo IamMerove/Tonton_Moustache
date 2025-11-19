@@ -14,6 +14,7 @@ function Formulaire() {
     const [roles, setRoles] = useState([]);
     const [niveaux, setNiveaux] = useState([]);
     const [selectedRole, setSelectedRole] = useState(null);
+    const [selectedRoleName, setSelectedRoleName] = useState("");
     const [selectedNiveau, setSelectedNiveau] = useState(null);
 
     const navigate = useNavigate();
@@ -26,7 +27,16 @@ function Formulaire() {
                 if (!resp.ok) return;
                 const data = await resp.json();
                 setRoles(data);
-                if (data.length > 0) setSelectedRole(data[0].id_role);
+                                if (data.length > 0) {
+                    // Prefer a student/user role when available
+                    const preferred = data.find((r) => {
+                        const n = (r.nom_role || "").toLowerCase();
+                        return n.includes("etudiant") || n.includes("élève") || n.includes("eleve") || n.includes("user") || n.includes("student");
+                    });
+                                    const chosen = preferred ? preferred : data[0];
+                                    setSelectedRole(chosen.id_role);
+                                    setSelectedRoleName(chosen.nom_role || "");
+                }
             } catch (err) {
                 // ignore silently or set error
             }
@@ -138,16 +148,12 @@ function Formulaire() {
                 />
             </div>
 
+            {/* Rôle attribué automatiquement — non modifiable par l'utilisateur */}
             <div className="form_group">
-                <label>Rôle</label>
-                <select value={selectedRole || ""} onChange={(e) => setSelectedRole(Number(e.target.value))}>
-                    {roles.length === 0 && <option value="">-- Aucun rôle --</option>}
-                    {roles.map((r) => (
-                        <option key={r.id_role} value={r.id_role}>
-                            {r.nom_role}
-                        </option>
-                    ))}
-                </select>
+                <small>Rôle attribué automatiquement lors de l'inscription.</small>
+                <div style={{ marginTop: 6, fontWeight: 600 }}>
+                    Rôle attribué : {selectedRoleName || "(chargement...)"}
+                </div>
             </div>
 
             <div className="form_group">
