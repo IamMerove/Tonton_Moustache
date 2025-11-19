@@ -1,0 +1,120 @@
+
+@import '../styles_root/gaming-theme.css';
+
+/* Styles for Accueil page */
+
+.container {
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #f6f1f1;
+}
+
+.header {
+    text-align: center;
+    color: var(--text-primary);
+    margin-bottom: 30px;
+}
+
+.title {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, var(--primary-purple), var(--primary-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-size: 1.2em;
+    color: var(--text-secondary);
+}
+
+.container-section {
+    display: flex;
+    gap: 50px;
+    flex-wrap: wrap;
+    
+}
+
+.section {
+    flex: 1;
+    min-width: 300px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all var(--transition-normal);
+}
+
+.section:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--primary-purple);
+    box-shadow: var(--glow-purple);
+    transform: translateY(-5px);
+}
+
+.sectionTitle {
+    color: var(--primary-cyan);
+    border-bottom: 2px solid var(--primary-cyan);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.list {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.listItem {
+    margin-bottom: 15px;
+}
+
+.strong {
+    color: var(--primary-pink);
+}
+
+/* Header styles */
+.header-link a {
+    color: var(--primary-cyan);
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 1.1em;
+    margin: 0 15px;
+    transition: color var(--transition-fast);
+    padding: 10px;
+}
+
+.header-link a:hover {
+    color: var(--primary-pink);
+}
+
+
+.header-container {
+    display:flex;
+    border-bottom: 1px solid #fff;
+    flex-direction: column;
+    gap:50px;
+}
+
+.header-title {
+    text-align: center;
+}
+
+.header-link {
+    display: flex;
+    justify-content: center;
+    gap:20px;
+
+}
+
+.footer {
+    display: flex;
+    border-top: 2px solid #fff;
+    justify-content: center;
+    padding: 50px;
+} 
+
