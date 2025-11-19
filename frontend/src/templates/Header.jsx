@@ -34,9 +34,11 @@ function Header_template() {
                 <h1>Tonton Moustache</h1>
             </div>
             <div className="header-link">
-                <Link to="/">Accueil</Link>
-                <Link to="/Inscription">Inscription</Link>
-                <Link to="/Login">Login</Link>
+                <Link to="/Accueil">Accueil</Link>
+                {!user ? (<Link to="/Inscription">Inscription</Link>) : ("")}
+                {!user ? (<Link to="/Login">Login</Link>) : ("")}
+                {user ? (<Link to="/user">Mon espace</Link>) : ("")}
+                
             </div>
             <div className="card-connection">
                 {!user ? (<span className="label-connection">Connection</span>) : (<span></span>)}
