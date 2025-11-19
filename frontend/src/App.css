@@ -1,3 +1,26 @@
+/* ----- INSCRIPTION PAGE CENTERING & GAMING TITLE ----- */
+.inscription-center-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+}
+
+.inscription-title-gaming {
+  font-size: 2.6em;
+  margin-bottom: 28px;
+  font-family: 'Orbitron', 'Arial', sans-serif;
+  background: linear-gradient(90deg, var(--primary-purple), var(--primary-cyan), var(--primary-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow: 0 0 18px var(--primary-purple), 0 0 6px var(--primary-cyan);
+}
 
 @import '../styles_root/gaming-theme.css';
 
