@@ -6,14 +6,16 @@ import Header_template from './templates/Header'
 import Footer_template from './templates/Footer'
 import Inscription_Page from './pages/Inscription'
 import Login_page from './pages/Login'
+import User from './pages/User_Pages'
+
 
 function App() {
   return (
     <BrowserRouter>
       <Header_template />
       <Routes>
-        <Route path="/" element={<Accueil />} />
         <Route path="/Accueil" element={<Accueil />} />
+        <Route path="/user" element={<User />} />
         <Route path="/Inscription" element={<Inscription_Page />} />
         <Route path="/Login" element={<Login_page />} />
       </Routes>

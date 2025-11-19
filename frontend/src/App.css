@@ -119,11 +119,23 @@
 
 .card-connection {
     background: var(--bg-card);
-    border: 1px solid var(--border-color);
+    border: 1px solid #fff;
     border-radius: var(--border-radius);
     padding: 10px 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: all var(--transition-fast);
+
+}
+
+.card-connection button {
+    padding: 5px;
+    border-radius: 10px;
+
+}
+
+.card-connection button:hover {
+    background-color: var(--primary-pink);
+    color: var(--text-primary);
 }
 
 .card-connection:hover {

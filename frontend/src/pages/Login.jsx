@@ -21,12 +21,15 @@ export default function Login() {
 
       const data = await response.json();
 
-      if (response.ok && data.access_token) {
-        // ✅ Stocke le token dans le localStorage
-        localStorage.setItem("token", data.access_token);
-        navigate("/Accueil"); // redirige après connexion
-      } else {
-        setError(data.detail || "Identifiants invalides");
+        if (response.ok && data.access_token) {
+          // ✅ Stocke le token dans le localStorage
+          localStorage.setItem("access_token", data.access_token);
+          localStorage.setItem("user_id", data.user.user_id);
+          navigate('/user');
+          window.location.reload(); // recharge la page pour mettre à jour le header
+          navigate('/user');
+        } else {
+          setError(data.detail || "Identifiants invalides");
       }
     } catch (err) {
       setError("Erreur de connexion au serveur.");
@@ -57,10 +60,14 @@ export default function Login() {
 
         <button type="submit">Se connecter</button>
         {error && <p className="error-message">{error}</p>}
+        <p style={{color:"#000", display:"flex"}}>A enlever !!!</p>
+        <p style={{color:"#000", display:"flex"}}>admin_email = "admin@tontonmoustache.com"
+        admin_password = "Admin123!"</p>
       </form>
 
       <footer className="login-footer">
         <p>@2025 Tonton Moustasssss. Tous droits réservés.</p>
+        
       </footer>
     </div>
   );
