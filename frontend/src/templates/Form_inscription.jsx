@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Use Vite env var when available to avoid hardcoding backend URL
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 function Formulaire() {
     const [nom, setNom] = useState("");
     const [prenom, setPrenom] = useState("");
@@ -14,6 +17,7 @@ function Formulaire() {
     const [roles, setRoles] = useState([]);
     const [niveaux, setNiveaux] = useState([]);
     const [selectedRole, setSelectedRole] = useState(null);
+    const [selectedRoleName, setSelectedRoleName] = useState("");
     const [selectedNiveau, setSelectedNiveau] = useState(null);
 
     const navigate = useNavigate();
@@ -26,7 +30,16 @@ function Formulaire() {
                 if (!resp.ok) return;
                 const data = await resp.json();
                 setRoles(data);
-                if (data.length > 0) setSelectedRole(data[0].id_role);
+                                if (data.length > 0) {
+                    // Prefer a student/user role when available
+                    const preferred = data.find((r) => {
+                        const n = (r.nom_role || "").toLowerCase();
+                        return n.includes("etudiant") || n.includes("élève") || n.includes("eleve") || n.includes("user") || n.includes("student");
+                    });
+                                    const chosen = preferred ? preferred : data[0];
+                                    setSelectedRole(chosen.id_role);
+                                    setSelectedRoleName(chosen.nom_role || "");
+                }
             } catch (err) {
                 // ignore silently or set error
             }
@@ -58,28 +71,38 @@ function Formulaire() {
             return;
         }
 
-        const payload = {
-            nom,
-            prenom,
-            email,
-            password,
-            avatar: null,
-            id_niveau: selectedNiveau || 1,
-            id_role: selectedRole || 1,
-            consentement_rgpd: consentement,
-        };
+            // normalize and trim inputs
+            const payload = {
+                nom: nom.trim(),
+                prenom: prenom.trim(),
+                email: email.trim().toLowerCase(),
+                password, // keep raw password only for submission
+                avatar: null,
+                id_niveau: Number(selectedNiveau || 1),
+                id_role: Number(selectedRole || 1),
+                consentement_rgpd: Boolean(consentement),
+            };
 
         try {
             setLoading(true);
-            const resp = await fetch("http://localhost:8000/users/", {
+            const resp = await fetch(`${API_BASE}/users/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Accept": "application/json",
                 },
                 body: JSON.stringify(payload),
             });
 
-            const data = await resp.json();
+            // handle response as json when possible, otherwise text
+            const text = await resp.text();
+            let data = null;
+            try {
+                data = text ? JSON.parse(text) : {};
+            } catch (err) {
+                data = { message: text };
+            }
+
             if (!resp.ok) {
                 const detail = data.detail || data.message || JSON.stringify(data);
                 setError(detail);
@@ -138,16 +161,10 @@ function Formulaire() {
                 />
             </div>
 
+            {/* Rôle attribué automatiquement — non modifiable par l'utilisateur */}
             <div className="form_group">
-                <label>Rôle</label>
-                <select value={selectedRole || ""} onChange={(e) => setSelectedRole(Number(e.target.value))}>
-                    {roles.length === 0 && <option value="">-- Aucun rôle --</option>}
-                    {roles.map((r) => (
-                        <option key={r.id_role} value={r.id_role}>
-                            {r.nom_role}
-                        </option>
-                    ))}
-                </select>
+                <small>Rôle attribué automatiquement lors de l'inscription.</small>
+                <div className="role-badge">Rôle attribué : {selectedRoleName || "(chargement...)"}</div>
             </div>
 
             <div className="form_group">
