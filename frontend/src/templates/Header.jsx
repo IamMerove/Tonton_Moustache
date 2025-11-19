@@ -37,6 +37,7 @@ function Header_template() {
                 <Link to="/Accueil">Accueil</Link>
                 {!user ? (<Link to="/Inscription">Inscription</Link>) : ("")}
                 {!user ? (<Link to="/Login">Login</Link>) : ("")}
+                {user ? (<Link to="/user">Mon espace</Link>) : ("")}
                 
             </div>
             <div className="card-connection">
