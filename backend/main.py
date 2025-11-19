@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Imports de la database
+# Imports database
 from database import engine, Base
 
-# Imports des modèles (dans l'ordre des dépendances)
+# Imports des modèles
 from roles.models import Role
 from niveaux.models import Niveau
 from matieres.models import Matiere
@@ -13,7 +13,7 @@ from users.models import User
 from sessions.models import SessionConversation
 from messages.models import Message
 
-# Imports des routers
+# Imports routers existants
 from users import router as users_router
 from agents.agents_routes import router as agents_router
 from roles import router as roles_router
@@ -21,12 +21,14 @@ from niveaux import router as niveaux_router
 from sessions import router as sessions_router
 from messages.messages_routes import router as messages_router
 from matieres import router as matieres_router
-from database import engine, Base
 
-# ============= CRÉATION DES TABLES =============
+# === NOUVEAU : import du router auth ===
+from auth import router as auth_router
+
+# Création des tables
 Base.metadata.create_all(bind=engine)
 
-# ============= CONFIGURATION FASTAPI =============
+# App
 app = FastAPI(
     title="Tonton Moustache API",
     description="API de gestion d'agent IA",
@@ -35,19 +37,18 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# ============= MIDDLEWARE CORS =============
+# Middleware CORS — OK avec authentification par cookie
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # URLs du frontend
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ============= ROUTES PRINCIPALES =============
+# Routes de base
 @app.get("/")
 def read_root():
-    """Page d'accueil de l'API"""
     return {
         "message": "Bienvenue sur l'API Tonton Moustache! 🍳",
         "version": "1.0.0",
@@ -60,67 +61,24 @@ def read_root():
 
 @app.get("/health")
 def health_check():
-    """Vérification de l'état de l'API"""
     return {"status": "OK", "message": "API fonctionnelle"}
 
-# ============= INCLUSION DES ROUTERS =============
-app.include_router(
-    users_router, 
-    prefix="/users", 
-    tags=["Utilisateurs"],
-    responses={404: {"description": "Utilisateur non trouvé"}}
-)
+# Inclusion des routers
+app.include_router(auth_router, prefix="/auth", tags=["Authentification"])
+app.include_router(users_router, prefix="/users", tags=["Utilisateurs"])
+app.include_router(agents_router, prefix="/agents", tags=["Agents"])
+app.include_router(roles_router, prefix="/roles", tags=["Roles"])
+app.include_router(niveaux_router, prefix="/niveau", tags=["Niveaux"])
+app.include_router(matieres_router, prefix="/matieres", tags=["Matières"])
+app.include_router(messages_router, prefix="/messages", tags=["Messages"])
+app.include_router(sessions_router, prefix="/sessions", tags=["Sessions"])
 
-app.include_router(
-    agents_router,
-    prefix="/agents",
-    tags=["Agents"],
-    responses={404: {"description": "Agent non trouvé"}}
-  
-)
-
-app.include_router(
-    roles_router, 
-    prefix="/roles", 
-    tags=["Roles"],
-    responses={404: {"description": "Role non trouvé"}}
-)
-
-app.include_router(
-    niveaux_router, 
-    prefix="/niveau", 
-    tags=["Niveaux"],
-    responses={404: {"description": "Niveau non trouvé"}}
-)
-
-app.include_router(
-    matieres_router, 
-    prefix="/matieres", 
-    tags=["Matières"],
-    responses={404: {"description": "Matière non trouvée"}}
-)
-
-app.include_router(
-    messages_router,
-    prefix="/messages",
-    tags=["Messages"],
-    responses={404: {"description": "Message non trouvé"}}
-    
-)
-
-app.include_router(
-    sessions_router, 
-    prefix="/sessions", 
-    tags=["Sessions"],
-    responses={404: {"description": "Session non trouvée"}}
-)
-
-# ============= DÉMARRAGE =============
+# Démarrage
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
-        "main:app", 
-        host="0.0.0.0", 
-        port=8000, 
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
         reload=True
     )
