@@ -1,0 +1,114 @@
+import { useState, useRef, useEffect} from 'react';
+import { useChatContext } from '../../context/ChatContext';
+import { useUserContext } from '../../context/UserContext';
+import MainLayout from './MainLayout';
+
+
+function Chat(params) {
+
+    const { messages, isLoading, sendMessage } = useChatContext();
+    const { addXP } = useUserContext();
+    
+    // ========== ÉTAT LOCAL ==========
+    const [inputValue, setInputValue] = useState('');
+    const [currentPage, setCurrentPage] = useState('chat');
+    
+    // ========== RÉFÉRENCES ==========
+    const messagesEndRef = useRef(null);
+
+    // ========== EFFETS ==========
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
+
+    // ========== FONCTIONS ==========
+    const handleSendMessage = () => {
+        sendMessage(inputValue);
+        addXP(10); // Ajoute 10 XP à chaque message envoyé
+        setInputValue('');
+    };
+    return (<>
+        <MainLayout>
+                <div className="chat-page">
+                <div className="chat-header">
+                    <h2 className="page-title gradient-text">💬 Assistant IA Personnel</h2>
+                    <p className="page-subtitle">Pose-moi toutes tes questions sur tes cours !</p>
+                    <button 
+                    onClick={() => setMessages([])}
+                    className="fixed bottom-28 left-8 z-50 px-6 py-3 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-full font-bold shadow-2xl hover:scale-110 transition-all animate-pulse"
+                    >
+                    🔄 Nouvelle conversation
+                    </button>
+                </div>
+
+                <div className="messages-container card-gaming">
+                    {messages.length === 0 ? (
+                    <div className="empty-state fade-in">
+                        <div className="empty-icon">🚀</div>
+                        <h3>Commence ton aventure d'apprentissage !</h3>
+                        <p>Pose ta première question pour gagner de l'XP</p>
+                    </div>
+                    ) : (
+                    messages.map((message, index) => (
+                        <div 
+                        key={index} 
+                        className={`message ${message.role} fade-in`}
+                        >
+                        <div className="message-avatar">
+                            {message.role === 'user' ? '👤' : '🤖'}
+                        </div>
+                        <div className="message-content prose prose-invert max-w-none">
+                            {message.role === 'assistant' ? (
+                                <div>{message.content}</div>
+                            ) : (
+                                message.content
+                            )}
+                        </div>
+                        </div>
+                    ))
+                    )}
+                    
+                    {isLoading && (
+                    <div className="message assistant fade-in">
+                        <div className="message-avatar">🤖</div>
+                        <div className="message-content loading">
+                        <span className="typing-indicator">●●●</span>
+                        </div>
+                    </div>
+                    )}
+                    
+                    <div ref={messagesEndRef} />
+                </div>
+
+                <div className="input-container">
+                    <textarea 
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                        }
+                    }}
+                    placeholder="💭 Tape ta question ici... (Entrée pour envoyer)"
+                    rows="2"
+                    disabled={isLoading}
+                    className="chat-input"
+                    />
+                    <button 
+                    onClick={handleSendMessage}
+                    disabled={isLoading || inputValue.trim() === ''}
+                    className="send-button"
+                    >
+                    {isLoading ? '⏳' : '🚀'}
+                    <span>{isLoading ? 'Réflexion...' : 'Envoyer'}</span>
+                    </button>
+                </div>
+            </div>
+        </MainLayout>
+        
+    );
+    </>)
+}
+
+export default Chat;

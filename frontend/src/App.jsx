@@ -7,7 +7,7 @@ import Footer_template from './templates/Footer'
 import Inscription_Page from './pages/Inscription'
 import Login_page from './pages/Login'
 import User from './pages/User_Pages'
-
+import Chat from './templates/Chat_card'
 
 function App() {
   return (
@@ -18,6 +18,7 @@ function App() {
         <Route path="/user" element={<User />} />
         <Route path="/Inscription" element={<Inscription_Page />} />
         <Route path="/Login" element={<Login_page />} />
+        <Route path="/chat" element={<Chat />} />
       </Routes>
       <Footer_template />
     </BrowserRouter>
