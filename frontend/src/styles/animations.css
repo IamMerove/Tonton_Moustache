@@ -1,0 +1,85 @@
+/* ===== ANIMATIONS GAMING ===== */
+
+/* Apparition fluide */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Glitch effect (optionnel, pour le titre) */
+@keyframes glitch {
+  0%, 100% {
+    text-shadow: 
+      2px 2px var(--primary-cyan),
+      -2px -2px var(--primary-pink);
+  }
+  50% {
+    text-shadow: 
+      -2px -2px var(--primary-cyan),
+      2px 2px var(--primary-pink);
+  }
+}
+
+/* Pulsation néon */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+  }
+}
+
+/* Indicateur de chargement gaming */
+@keyframes loadingDots {
+  0%, 20% { content: '●'; }
+  40% { content: '●●'; }
+  60%, 100% { content: '●●●'; }
+}
+
+/* Slide depuis la gauche (sidebar) */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Slide depuis le haut (topbar) */
+@keyframes slideInTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Classes utilitaires d'animation */
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.4s ease-out;
+}
+
+.slide-in-top {
+  animation: slideInTop 0.4s ease-out;
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}

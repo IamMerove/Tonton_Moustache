@@ -1,20 +1,19 @@
-# Image Node.js officielle
-FROM node:20-alpine
+# Étape 1 : build avec Node
+FROM node:20-alpine as builder
 
-# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers de dépendances
 COPY package*.json ./
-
-# Installer les dépendances
 RUN npm install
 
-# Copier le code source
 COPY . .
+RUN npm run build   # ← crée le dossier /app/dist avec tout le site statique
 
-# Exposer le port
-EXPOSE 5173
+# Étape 2 : servir avec Nginx (léger et parfait pour production)
+FROM nginx:alpine
 
-# Commande de démarrage en mode développement
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,148 @@
+/* ===== TOPBAR GAMING ===== */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 25px;
+  background: var(--bg-card);
+  border-bottom: 2px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 100;
+}
+
+/* Logo/Brand */
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  font-size: 32px;
+  filter: drop-shadow(0 0 10px var(--primary-purple));
+}
+
+.brand-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Stats centrales */
+.topbar-stats {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Badge de niveau */
+.level-badge {
+  background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+  padding: 5px 15px;
+  border-radius: 20px;
+  box-shadow: var(--glow-purple);
+  font-size: 18px;
+}
+
+/* Barre d'XP */
+.xp-container {
+  min-width: 200px;
+}
+
+.xp-bar-container {
+  position: relative;
+  height: 24px;
+  background: var(--bg-darker);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-cyan), var(--primary-purple));
+  transition: width 0.5s ease;
+  box-shadow: 0 0 15px var(--primary-cyan);
+}
+
+.xp-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  z-index: 1;
+}
+
+/* Avatar et pseudo */
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--bg-darker);
+  border-radius: 30px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.topbar-user:hover {
+  border-color: var(--primary-purple);
+  box-shadow: var(--glow-purple);
+  transform: translateY(-2px);
+}
+
+.user-avatar {
+  font-size: 28px;
+  filter: drop-shadow(0 0 8px var(--primary-cyan));
+}
+
+.user-pseudo {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .topbar-stats {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .xp-container {
+    width: 100%;
+  }
+}

@@ -1,0 +1,31 @@
+
+/* Importe tous tes CSS personnalisés */
+@import './components/layout/Sidebar.css';
+@import './components/layout/TopBar.css';
+@import './components/layout/MainLayout.css';
+@import './App.css';
+
+/* Fond global gaming */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: white;
+  min-height: 100vh;
+}
+
+/* Animation d'apparition */
+.fade-in { animation: fadeIn 0.5s ease-in; }
+.slide-in-left { animation: slideInLeft 0.6s ease-out; }
+.slide-in-top { animation: slideInTop 0.6s ease-out; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes slideInTop { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(90deg, #00f2ff, #ff00c8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
