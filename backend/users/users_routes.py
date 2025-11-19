@@ -11,6 +11,7 @@ from database import get_db
 # Imports locaux
 from .schemas import UserCreate, UserUpdate, UserResponse, UserLogin, UserPublic
 from .crud import UserCRUD
+import auth
 
 router = APIRouter()
 
@@ -110,18 +111,26 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
     user = UserCRUD.authenticate(db, credentials.email, credentials.password)
     if not user:
         raise HTTPException(
-            status_code=401, 
+            status_code=401,
             detail="Email ou mot de passe incorrect"
         )
-    
+
+    # Créer le token d'accès
+    access_token = auth.create_access_token(
+        data={"sub": str(user.id_etudiant)}
+    )
+
     return {
-        "message": "Connexion réussie",
-        "user_id": user.id_etudiant,
-        "nom": user.nom,
-        "prenom": user.prenom,
-        "email": user.email,
-        "role_id": user.id_role,
-        "niveau_id": user.id_niveau
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {
+            "user_id": user.id_etudiant,
+            "nom": user.nom,
+            "prenom": user.prenom,
+            "email": user.email,
+            "role_id": user.id_role,
+            "niveau_id": user.id_niveau
+        }
     }
 
 @router.get("/email/{email}/exists")
