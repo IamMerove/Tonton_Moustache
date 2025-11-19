@@ -34,7 +34,7 @@ function Header_template() {
                 <h1>Tonton Moustache</h1>
             </div>
             <div className="header-link">
-                <Link to="/Accueil">Accueil</Link>
+                <Link to="/">Accueil</Link>
                 <Link to="/Inscription">Inscription</Link>
                 <Link to="/Login">Login</Link>
             </div>
