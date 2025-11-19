@@ -11,6 +11,10 @@ function Header_template(params) {
                 <Link to="/Inscription">Inscription</Link>
                 <Link to="/Login">Login</Link>
             </div>
+            <div className="card-connection">
+                <span className="label-connection">Connection</span>
+                <p>Administrateur</p>
+            </div>
             
         </ div>
     )
