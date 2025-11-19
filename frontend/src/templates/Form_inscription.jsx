@@ -1,37 +1,188 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
+function Formulaire() {
+    const [nom, setNom] = useState("");
+    const [prenom, setPrenom] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [consentement, setConsentement] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
 
-function Formulaire(params) {
-    return(
-        <>
-           <form className="formulaire_inscription">
+    const [roles, setRoles] = useState([]);
+    const [niveaux, setNiveaux] = useState([]);
+    const [selectedRole, setSelectedRole] = useState(null);
+    const [selectedNiveau, setSelectedNiveau] = useState(null);
 
-                <div className="form_group">
-                    <input type="text" placeholder="Nom" />
-                </div>
+    const navigate = useNavigate();
 
-                <div className="form_group">
-                    <input type="text" placeholder="Prénom" />
-                </div>
+    useEffect(() => {
+        // Fetch roles
+        const fetchRoles = async () => {
+            try {
+                const resp = await fetch("http://localhost:8000/roles/read_all_role");
+                if (!resp.ok) return;
+                const data = await resp.json();
+                setRoles(data);
+                if (data.length > 0) setSelectedRole(data[0].id_role);
+            } catch (err) {
+                // ignore silently or set error
+            }
+        };
 
-                <div className="form_group">
-                    <input type="email" placeholder="Email" />
-                </div>
+        const fetchNiveaux = async () => {
+            try {
+                const resp = await fetch("http://localhost:8000/niveau/read_all_niveau");
+                if (!resp.ok) return;
+                const data = await resp.json();
+                setNiveaux(data);
+                if (data.length > 0) setSelectedNiveau(data[0].id_niveau);
+            } catch (err) {
+                // ignore silently or set error
+            }
+        };
 
-                <div className="form_group">
-                    <input type="password" placeholder="Password" />
-                </div>
+        fetchRoles();
+        fetchNiveaux();
+    }, []);
 
-                <div className="form_group">
-                    <input type="button" value="S'inscrire" />
-                </div>
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        setSuccess(null);
 
-                <div className="form_group">
-                    <input type="checkbox" name="checkbox"/> Accepter ca gaaaarrssss!
-                </div>
+        if (!consentement) {
+            setError("Vous devez accepter les conditions.");
+            return;
+        }
 
-           </form>
-        </>
-    )
+        const payload = {
+            nom,
+            prenom,
+            email,
+            password,
+            avatar: null,
+            id_niveau: selectedNiveau || 1,
+            id_role: selectedRole || 1,
+            consentement_rgpd: consentement,
+        };
+
+        try {
+            setLoading(true);
+            const resp = await fetch("http://localhost:8000/users/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await resp.json();
+            if (!resp.ok) {
+                const detail = data.detail || data.message || JSON.stringify(data);
+                setError(detail);
+            } else {
+                setSuccess("Inscription réussie. Redirection vers la page de connexion...");
+                // small delay then redirect to Login route
+                setTimeout(() => navigate("/Login"), 1200);
+            }
+        } catch (err) {
+            setError(String(err));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <form className="formulaire_inscription" onSubmit={handleSubmit}>
+            <div className="form_group">
+                <input
+                    type="text"
+                    placeholder="Nom"
+                    value={nom}
+                    onChange={(e) => setNom(e.target.value)}
+                    required
+                />
+            </div>
+
+            <div className="form_group">
+                <input
+                    type="text"
+                    placeholder="Prénom"
+                    value={prenom}
+                    onChange={(e) => setPrenom(e.target.value)}
+                    required
+                />
+            </div>
+
+            <div className="form_group">
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+            </div>
+
+            <div className="form_group">
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                />
+            </div>
+
+            <div className="form_group">
+                <label>Rôle</label>
+                <select value={selectedRole || ""} onChange={(e) => setSelectedRole(Number(e.target.value))}>
+                    {roles.length === 0 && <option value="">-- Aucun rôle --</option>}
+                    {roles.map((r) => (
+                        <option key={r.id_role} value={r.id_role}>
+                            {r.nom_role}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            <div className="form_group">
+                <label>Niveau</label>
+                <select value={selectedNiveau || ""} onChange={(e) => setSelectedNiveau(Number(e.target.value))}>
+                    {niveaux.length === 0 && <option value="">-- Aucun niveau --</option>}
+                    {niveaux.map((n) => (
+                        <option key={n.id_niveau} value={n.id_niveau}>
+                            {n.nom_niveau}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            <div className="form_group">
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={consentement}
+                        onChange={(e) => setConsentement(e.target.checked)}
+                    />
+                    &nbsp;J'accepte les conditions
+                </label>
+            </div>
+
+            {error && <div className="form_error">{error}</div>}
+            {success && <div className="form_success">{success}</div>}
+
+            <div className="form_group">
+                <button type="submit" disabled={loading}>
+                    {loading ? "En cours..." : "S'inscrire"}
+                </button>
+            </div>
+        </form>
+    );
 }
 
 export default Formulaire;
