@@ -199,6 +199,22 @@
   color: var(--text-secondary);
 }
 
+/* ----- INSCRIPTION PAGE CENTERING ----- */
+.inscription-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 140px); /* leave space for header/footer */
+  padding: 40px 20px;
+  background: linear-gradient(180deg, rgba(6,7,14,0.95), rgba(10,12,20,0.98));
+}
+
+/* ensure the form stays nicely centered on small screens */
+.inscription-container .formulaire_inscription {
+  margin: 0 auto;
+}
+
 /* ----- REGISTRATION (Gaming Theme) ----- */
 .formulaire_inscription {
   display: flex;
