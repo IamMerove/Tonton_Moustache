@@ -35,8 +35,9 @@ function Header_template() {
             </div>
             <div className="header-link">
                 <Link to="/Accueil">Accueil</Link>
-                <Link to="/Inscription">Inscription</Link>
-                <Link to="/Login">Login</Link>
+                {!user ? (<Link to="/Inscription">Inscription</Link>) : ("")}
+                {!user ? (<Link to="/Login">Login</Link>) : ("")}
+                
             </div>
             <div className="card-connection">
                 {!user ? (<span className="label-connection">Connection</span>) : (<span></span>)}

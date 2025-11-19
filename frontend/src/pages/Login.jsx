@@ -60,8 +60,8 @@ export default function Login() {
 
         <button type="submit">Se connecter</button>
         {error && <p className="error-message">{error}</p>}
-        <p style={{color:"#000", display:"flex"}}>A enlever !!!</p>
-        <p style={{color:"#000", display:"flex"}}>admin_email = "admin@tontonmoustache.com"
+        <p style={{color:"#faf8f8ff", display:"flex"}}>A enlever !!!</p>
+        <p style={{color:"#f9f3f3ff", display:"flex"}}>admin_email = "admin@tontonmoustache.com"
         admin_password = "Admin123!"</p>
       </form>
 
