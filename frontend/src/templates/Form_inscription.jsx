@@ -164,9 +164,7 @@ function Formulaire() {
             {/* Rôle attribué automatiquement — non modifiable par l'utilisateur */}
             <div className="form_group">
                 <small>Rôle attribué automatiquement lors de l'inscription.</small>
-                <div style={{ marginTop: 6, fontWeight: 600 }}>
-                    Rôle attribué : {selectedRoleName || "(chargement...)"}
-                </div>
+                <div className="role-badge">Rôle attribué : {selectedRoleName || "(chargement...)"}</div>
             </div>
 
             <div className="form_group">
