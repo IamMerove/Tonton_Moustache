@@ -7,9 +7,14 @@ import Footer_template from './templates/Footer'
 import Inscription_Page from './pages/Inscription'
 import Login_page from './pages/Login'
 import User from './pages/User_Pages'
+
 import Chat from './templates/Chat_card'
+import MatiereSelector from './pages/MatiereSelector'
 
 function App() {
+  // Ajout d'un state pour la matière sélectionnée
+  const [matiere, setMatiere] = React.useState(null);
+
   return (
     <BrowserRouter>
       <Header_template />
@@ -19,7 +24,13 @@ function App() {
         <Route path="/user" element={<User />} />
         <Route path="/Inscription" element={<Inscription_Page />} />
         <Route path="/Login" element={<Login_page />} />
-        <Route path="/chat" element={<Chat />} />
+        <Route path="/chat" element={
+          matiere ? (
+            <Chat matiere={matiere} />
+          ) : (
+            <MatiereSelector onSelect={setMatiere} />
+          )
+        } />
       </Routes>
       <Footer_template />
     </BrowserRouter>

@@ -80,25 +80,45 @@ def init_database():
             else:
                 print(f"   ⚠️  Niveau '{niveau_nom}' existe déjà")
         
+
         db.commit()
-        
+
+        # ============= CRÉATION DES MATIÈRES =============
+        print("\n📚 Création des matières principales...")
+        matieres = [
+            ("Français", "Cours de français collège/lycée"),
+            ("Mathématiques", "Cours de mathématiques collège/lycée"),
+            ("Histoire-Géo", "Cours d'histoire-géographie"),
+            ("Biologie", "Cours de SVT/biologie"),
+            ("Physique", "Cours de physique-chimie"),
+            ("Anglais", "Cours d'anglais")
+        ]
+        for nom, desc in matieres:
+            matiere_exists = db.query(Matiere).filter(Matiere.nom_matieres == nom).first()
+            if not matiere_exists:
+                matiere = Matiere(nom_matieres=nom, description_matiere=desc)
+                db.add(matiere)
+                print(f"   ✅ Matière '{nom}' créée")
+            else:
+                print(f"   ⚠️  Matière '{nom}' existe déjà")
+        db.commit()
+
         # Récupérer le premier niveau pour l'admin
         premier_niveau = db.query(Niveau).first()
-        
+
         # ============= CRÉATION DU COMPTE ADMIN =============
         print("\n🔐 Création du compte administrateur...")
-        
+
         # Informations du compte admin
         admin_email = "admin@tontonmoustache.com"
         admin_password = "Admin123!"
-        
+
         # Vérifier si l'admin existe déjà
         admin_exists = db.query(User).filter(User.email == admin_email).first()
-        
+
         if not admin_exists:
             # Hasher le mot de passe
             hashed_password = hash_password(admin_password)
-            
             # Créer le compte admin
             admin = User(
                 nom="Administrateur",
@@ -109,17 +129,15 @@ def init_database():
                 id_niveau=premier_niveau.id_niveau,
                 id_role=role_admin.id_role
             )
-            
             db.add(admin)
             db.commit()
-            
             print("   ✅ Compte administrateur créé avec succès!")
             print(f"\n📧 Email: {admin_email}")
             print(f"🔑 Mot de passe: {admin_password}")
             print("\n⚠️  IMPORTANT: Changez ce mot de passe après la première connexion!")
         else:
             print("   ⚠️  Un compte admin existe déjà")
-        
+
         print("\n✨ Initialisation terminée avec succès!\n")
         
     except Exception as e:

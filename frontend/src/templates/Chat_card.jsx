@@ -1,38 +1,34 @@
-import { useState, useRef, useEffect} from 'react';
+import { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useChatContext } from '../../context/ChatContext';
 import { useUserContext } from '../../context/UserContext';
 import MainLayout from './MainLayout';
 
 
-function Chat(params) {
-
+function Chat({ matiere }) {
     const { messages, isLoading, sendMessage } = useChatContext();
     const { addXP } = useUserContext();
-    
-    // ========== ÉTAT LOCAL ==========
     const [inputValue, setInputValue] = useState('');
     const [currentPage, setCurrentPage] = useState('chat');
-    
-    // ========== RÉFÉRENCES ==========
     const messagesEndRef = useRef(null);
 
-    // ========== EFFETS ==========
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    // ========== FONCTIONS ==========
+    // Nouvelle fonction pour envoyer la matière
     const handleSendMessage = () => {
-        sendMessage(inputValue);
-        addXP(10); // Ajoute 10 XP à chaque message envoyé
+        sendMessage(inputValue, matiere);
+        addXP(10);
         setInputValue('');
     };
     return (<>
         <MainLayout>
                 <div className="chat-page">
                 <div className="chat-header">
-                    <h2 className="page-title gradient-text">💬 Assistant IA Personnel</h2>
-                    <p className="page-subtitle">Pose-moi toutes tes questions sur tes cours !</p>
+                    <h2 className="page-title gradient-text">💬 Assistant IA {matiere?.nom_matieres ? `: ${matiere.nom_matieres}` : 'Personnel'}</h2>
+                    <p className="page-subtitle">Pose-moi toutes tes questions sur {matiere?.nom_matieres || 'tes cours'} !</p>
                     <button 
                     onClick={() => setMessages([])}
                     className="bouton-new"
@@ -57,11 +53,11 @@ function Chat(params) {
                         <div className="message-avatar">
                             {message.role === 'user' ? '👤' : '🤖'}
                         </div>
-                        <div className="message-content prose prose-invert max-w-none">
+                        <div className="message-content prose prose-invert max-w-none" style={{ whiteSpace: 'pre-line' }}>
                             {message.role === 'assistant' ? (
-                                <div>{message.content}</div>
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
                             ) : (
-                                message.content
+                                <span>{message.content}</span>
                             )}
                         </div>
                         </div>

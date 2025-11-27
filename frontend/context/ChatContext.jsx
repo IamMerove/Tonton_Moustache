@@ -39,7 +39,7 @@ export function ChatProvider({ children }) {
     }
   }, [messages]);
 
-  const sendMessage = async (content) => {
+  const sendMessage = async (content, matiere) => {
     if (!content.trim()) return;
 
     const userMessage = { role: 'user', content: content.trim() };
@@ -52,10 +52,13 @@ export function ChatProvider({ children }) {
         .filter(m => m.role === 'user' || m.role === 'assistant')
         .map(m => ({ role: m.role, content: m.content }));
 
+      const body = { message: content.trim(), history };
+      if (matiere) body.matiere_id = matiere.id_matieres;
+
       const response = await fetch('http://localhost:8000/chatbot/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: content.trim(), history })
+        body: JSON.stringify(body)
       });
 
       const data = await response.json();
