@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 import Accueil from './pages/Accueil'
 import Header_template from './templates/Header'
@@ -14,6 +14,7 @@ function App() {
     <BrowserRouter>
       <Header_template />
       <Routes>
+        <Route path="/" element={<Navigate to="/Accueil" />} />
         <Route path="/Accueil" element={<Accueil />} />
         <Route path="/user" element={<User />} />
         <Route path="/Inscription" element={<Inscription_Page />} />

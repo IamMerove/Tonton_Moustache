@@ -21,6 +21,8 @@ from niveaux import router as niveaux_router
 from sessions import router as sessions_router
 from messages.messages_routes import router as messages_router
 from matieres import router as matieres_router
+# Nouveau : import du router chatbot
+from chatbot_routes import router as chatbot_router
 
 # === NOUVEAU : import du router auth ===
 from auth import router as auth_router
@@ -64,6 +66,7 @@ def health_check():
     return {"status": "OK", "message": "API fonctionnelle"}
 
 # Inclusion des routers
+
 app.include_router(auth_router, prefix="/auth", tags=["Authentification"])
 app.include_router(users_router, prefix="/users", tags=["Utilisateurs"])
 app.include_router(agents_router, prefix="/agents", tags=["Agents"])
@@ -72,6 +75,8 @@ app.include_router(niveaux_router, prefix="/niveau", tags=["Niveaux"])
 app.include_router(matieres_router, prefix="/matieres", tags=["Matières"])
 app.include_router(messages_router, prefix="/messages", tags=["Messages"])
 app.include_router(sessions_router, prefix="/sessions", tags=["Sessions"])
+# Inclusion du router chatbot
+app.include_router(chatbot_router)
 
 # Démarrage
 if __name__ == "__main__":

@@ -69,6 +69,28 @@ Tonton_Moustache/
     └── Dockerfile         # Image Docker du frontend
 ```
 
+
+## 🔑 Variables d'environnement backend
+
+Le backend nécessite un fichier `backend/.env` avec les variables suivantes :
+
+```env
+# Clé API Groq (obligatoire)
+GROQ_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Modèle Groq à utiliser (optionnel, défaut : llama3-8b-8192)
+GROQ_MODEL=llama3-8b-8192
+
+# Prompt système pour le chatbot (optionnel)
+GROQ_PROMPT=Tu es un assistant éducatif.
+
+# URL de l'API Groq (optionnel, défaut : https://api.groq.com/openai/v1/chat/completions)
+GROQ_API_URL=https://api.groq.com/openai/v1/chat/completions
+```
+
+Le fichier `.env` n'est pas versionné : crée-le à la racine du dossier `backend` avant de lancer les conteneurs.
+
+---
 ## 🔧 Développement
 
 Les volumes sont montés pour permettre le **hot-reload** :

@@ -47,15 +47,24 @@ export function ChatProvider({ children }) {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/chat', {
+      // Préparer l'historique pour l'API (format OpenAI)
+      const history = messages
+        .filter(m => m.role === 'user' || m.role === 'assistant')
+        .map(m => ({ role: m.role, content: m.content }));
+
+      const response = await fetch('http://localhost:8000/chatbot/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [...messages, userMessage] })
+        body: JSON.stringify({ message: content.trim(), history })
       });
 
       const data = await response.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
-      addXP(15);
+      if (response.ok && data.response) {
+        setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+        addXP(15);
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', content: '❌ Erreur du chatbot : ' + (data.detail || 'Réponse invalide') }]);
+      }
     } catch (err) {
       setMessages(prev => [...prev, { role: 'assistant', content: '❌ Erreur de connexion au serveur' }]);
     } finally {

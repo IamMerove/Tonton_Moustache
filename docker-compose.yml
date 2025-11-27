@@ -10,6 +10,8 @@ services:
     volumes:
       - ./backend:/app
       - backend_db:/app/data
+    env_file:
+      - ./backend/.env
     environment:
       - PYTHONUNBUFFERED=1
     command: sh -c "python init_admin.py && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
