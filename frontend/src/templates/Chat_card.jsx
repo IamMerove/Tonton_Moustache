@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 import { useChatContext } from '../../context/ChatContext';
 import { useUserContext } from '../../context/UserContext';
 import MainLayout from './MainLayout';
+import { useNavigate } from 'react-router-dom';
 
 
 function Chat({ matiere }) {
@@ -12,10 +13,15 @@ function Chat({ matiere }) {
     const [inputValue, setInputValue] = useState('');
     const [currentPage, setCurrentPage] = useState('chat');
     const messagesEndRef = useRef(null);
+    const navigate = useNavigate()
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
+
+    const handleNavigate = () => {
+        navigate('/chat')
+    }
 
     // Nouvelle fonction pour envoyer la matière
     const handleSendMessage = () => {
@@ -30,7 +36,7 @@ function Chat({ matiere }) {
                     <h2 className="page-title gradient-text">💬 Assistant IA {matiere?.nom_matieres ? `: ${matiere.nom_matieres}` : 'Personnel'}</h2>
                     <p className="page-subtitle">Pose-moi toutes tes questions sur {matiere?.nom_matieres || 'tes cours'} !</p>
                     <button 
-                    onClick={() => setMessages([])}
+                    onClick={() => handleNavigate()}
                     className="bouton-new"
                     >
                     🔄 Nouvelle conversation
