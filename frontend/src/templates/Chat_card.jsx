@@ -35,7 +35,7 @@ function Chat(params) {
                     <p className="page-subtitle">Pose-moi toutes tes questions sur tes cours !</p>
                     <button 
                     onClick={() => setMessages([])}
-                    className="fixed bottom-28 left-8 z-50 px-6 py-3 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-full font-bold shadow-2xl hover:scale-110 transition-all animate-pulse"
+                    className="bouton-new"
                     >
                     🔄 Nouvelle conversation
                     </button>
